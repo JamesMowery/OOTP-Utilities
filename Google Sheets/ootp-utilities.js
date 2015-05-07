@@ -45,12 +45,13 @@ function addSalaries() {
     }
   }
 
+  // Inserts the SUM formulas in the row that represents totals
   sheet.getRange(currentRow + 1, currentCol + 2, 1, sheet.getDataRange().getWidth() - 1).setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow));
 
 }
 
 /**
- * A function that removes extra formatting from OOTP data,
+ * A function that cleans and reformats OOTP salary data,
  * thus making it usable within a spreadsheet environment.
  */
 function cleanSalaries() {
@@ -63,7 +64,7 @@ function cleanSalaries() {
 
   var rangeSelectorEnabled = false;
 
-  // TODO: Detect if custom range selection is enabled
+  // TODO: Detect if custom range selection is enabled via dialog box
 
   if (rangeSelectorEnabled === true) {
     // var data = SpreadsheetApp.getActiveSheet().getActiveRange().getValues();
@@ -147,7 +148,7 @@ function cleanSalaries() {
   // If using a selected range, apply results to that data range,
   // otherwise apply the results to the default range.
   if (rangeSelectorEnabled === true) {
-    sheet.getActiveRange().setValues(result).setNumberFormat("$#,##0_)");
+    // sheet.getActiveRange().setValues(result).setNumberFormat("$#,##0_)");
   }
   else {
     sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2, sheet.getDataRange().getWidth() - 2).setValues(result);
