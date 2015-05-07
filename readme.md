@@ -8,6 +8,8 @@ This GitHub repository contains OOTP Utilities, which is a collection of code sn
 
 Included are several Google Sheets custom functions that strips and correctly formats data from the Salaries page extracted from Out of the Park Baseball.
 
+I've created a visual quickstart guide, and it's **highly recommended** for getting to grips with how to use the JavaScript code within Google Sheets. View it here: [OOTP Utilities Quickstart Guide](http://imgur.com/a/IYIPC)
+
 **Instructions:**
 
 Navigate to Team > Front Office > Salaries.
