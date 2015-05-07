@@ -22,6 +22,7 @@ function addSalaries() {
   var cell = [];
   var currentRow = 0;
   var currentCol = 0;
+  var numberFormat = "$#,##0_)";
 
   // If selected cell contains totalTerm, expand SUM formulas,
   // otherwise collect all data and search for totalTerm
@@ -48,7 +49,8 @@ function addSalaries() {
   // Inserts the SUM formulas in the row that represents totals
   sheet.getRange(currentRow + 1, currentCol + 2,
                  1, sheet.getDataRange().getWidth() - 1)
-                 .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow));
+                 .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow))
+                 .setNumberFormat(numberFormat);
 
 }
 
@@ -63,6 +65,7 @@ function cleanSalaries() {
   var cellText = "";
   var leadingSlice = 0;
   var leadingNumber = "";
+  var numberFormat = "$#,##0_)";
 
   var rangeSelectorEnabled = false;
 
@@ -153,7 +156,7 @@ function cleanSalaries() {
   // If using a selected range, apply results to that data range,
   // otherwise apply the results to the default range.
   if (rangeSelectorEnabled === true) {
-    // sheet.getActiveRange().setValues(result).setNumberFormat("$#,##0_)");
+    // sheet.getActiveRange().setValues(result).setNumberFormat(numberFormat);
   }
   else {
     sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
@@ -162,6 +165,6 @@ function cleanSalaries() {
 
   // Set the formatting of the numbers
   sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
-                 10).setNumberFormat("$#,##0_)");
+                 10).setNumberFormat(numberFormat);
 
 }
