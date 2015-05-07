@@ -46,7 +46,9 @@ function addSalaries() {
   }
 
   // Inserts the SUM formulas in the row that represents totals
-  sheet.getRange(currentRow + 1, currentCol + 2, 1, sheet.getDataRange().getWidth() - 1).setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow));
+  sheet.getRange(currentRow + 1, currentCol + 2,
+                 1, sheet.getDataRange().getWidth() - 1)
+                 .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow));
 
 }
 
@@ -70,7 +72,8 @@ function cleanSalaries() {
     // var data = SpreadsheetApp.getActiveSheet().getActiveRange().getValues();
   }
   else {
-    var data = sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2, sheet.getDataRange().getWidth() - 2).getValues();
+    var data = sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
+                              sheet.getDataRange().getWidth() - 2).getValues();
 
     // Freeze the first row and column for pretty formatting
     sheet.setFrozenRows(1);
@@ -103,7 +106,8 @@ function cleanSalaries() {
         // and then add the appropriate number of zeros.
         if (leadingNumber != "0") {
           // Add the leading number
-          cellText = cellText.replace(/[^A-Za-z]m(?=\()?/g, leadingNumber + "00000");
+          cellText = cellText.replace(/[^A-Za-z]m(?=\()?/g,
+                                      leadingNumber + "00000");
         }
         else {
           // No leading number, just add zeros
@@ -125,7 +129,8 @@ function cleanSalaries() {
          */
         if (leadingNumber != "0") {
           // Add the leading number
-          cellText = cellText.replace(/[^A-Za-z]k(?=\()?/g, leadingNumber + "000");
+          cellText = cellText.replace(/[^A-Za-z]k(?=\()?/g,
+                                      leadingNumber + "000");
         }
         else {
           // No leading number, just add zeros
@@ -151,10 +156,12 @@ function cleanSalaries() {
     // sheet.getActiveRange().setValues(result).setNumberFormat("$#,##0_)");
   }
   else {
-    sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2, sheet.getDataRange().getWidth() - 2).setValues(result);
+    sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
+                   sheet.getDataRange().getWidth() - 2).setValues(result);
   }
 
   // Set the formatting of the numbers
-  sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2, 10).setNumberFormat("$#,##0_)")
+  sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
+                 10).setNumberFormat("$#,##0_)");
 
 }
