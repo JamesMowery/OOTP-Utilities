@@ -2,12 +2,11 @@
  * Adds "OOTP" to the menu, and provides access to various functions
  */
 function onOpen() {
-  var spreadsheet = SpreadsheetApp.getActive();
-  var menuItems = [
-    {name: 'Salary Cleaner', functionName: 'cleanSalaries'},
-    {name: 'Salary Totals', functionName: 'addSalaries'}
-  ];
-  spreadsheet.addMenu('OOTP', menuItems);
+ SpreadsheetApp.getUi()
+     .createMenu('OOTP')
+     .addItem('Salary Cleaner', 'cleanSalaries')
+     .addItem('Salary Totals', 'addSalaries')
+     .addToUi();
 }
 
 /**
