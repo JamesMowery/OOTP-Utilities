@@ -34,13 +34,13 @@ function addSalaries() {
   }
 
   // Search for the term denoting the totals row
-  for (i in data) {
-    for (j in data[i]) {
+  for (var i in data) {
+    for (var j in data[i]) {
       if (String(data[i][j]).search(totalTerm) !== -1) {
 
         // When found, store the row and column values
-        var currentRow = Number(i);
-        var currentCol = Number(j);
+        currentRow = Number(i);
+        currentCol = Number(j);
       }
     }
   }
@@ -50,7 +50,6 @@ function addSalaries() {
                  1, sheet.getDataRange().getWidth() - 1)
                  .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow))
                  .setNumberFormat(numberFormat);
-
 }
 
 /**
