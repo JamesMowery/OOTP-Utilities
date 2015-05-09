@@ -120,20 +120,19 @@ function addBudgets() {
   var budgets = getBudgets();
 
   // Set the budget values in the cells
-  sheet.getRange(currentRow, 2).setValue(budgets.last)
-    .setNumberFormat(numberFormat);
-  sheet.getRange(currentRow, 3).setValue(budgets.current)
-    .setNumberFormat(numberFormat);
-  sheet.getRange(currentRow, 4).setValue(budgets.next)
-    .setNumberFormat(numberFormat);
-  sheet.getRange(currentRow, 5).setValue(budgets.two)
-    .setNumberFormat(numberFormat);
+  sheet.getRange(currentRow, 2).setValue(budgets.last);
+  sheet.getRange(currentRow, 3).setValue(budgets.current);
+  sheet.getRange(currentRow, 4).setValue(budgets.next);
+  sheet.getRange(currentRow, 5).setValue(budgets.two);
 
   // Set the TREND formula for the remaining columns
   sheet.getRange(currentRow, 6)
                  .setValue(Utilities
                    .formatString('=TREND(B%s:E%s, B1:E1, F1:K1)',
-                                 currentRow, currentRow))
+                                 currentRow, currentRow));
+
+  // Set the number formats for the column
+  sheet.getRange(currentRow, 2, 1, sheet.getDataRange().getWidth() - 1)
                  .setNumberFormat(numberFormat);
 
 }
