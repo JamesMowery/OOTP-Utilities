@@ -16,6 +16,70 @@ function onOpen() {
 }
 
 /**
+ * Locates cells that have contract data
+ */
+function findContractCells(sheet, data) {
+  var coloredCells = {
+    'playerOptionCells': [],
+    'teamOptionCells': [],
+    'vestingOptionCells': [],
+    'autoContractCells': [],
+    'arbitrationCells': [],
+    'minorContractCells': []
+  };
+
+  var playerOptionColor;
+  var teamOptionColor;
+  var vestingOptionColor;
+  var autoContractColor;
+  var arbitrationColor;
+  var minorContractColor;
+
+  var i = 0, j = 0;
+  var playerContractHits = 0;
+  var teamContractHits = 0;
+
+  // Search for contract specifications
+  for (i in data) {
+    for (j in data[i]) {
+
+      // If the contract is a player option
+      if (String(data[i][j]).search(/\(P\)$/g) !== -1) {
+        coloredCells.playerOptionCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+      // If the contract is a team option
+      if (String(data[i][j]).search(/\(T\)$/g) !== -1) {
+        coloredCells.teamOptionCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+      // If the contract is a vesting option
+      if (String(data[i][j]).search(/\(V\)$/g) !== -1) {
+        coloredCells.vestingOptionCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+      // If the contract is a auto contract
+      if (String(data[i][j]).search(/\(auto\)$/g) !== -1) {
+        coloredCells.autoContractCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+      // If the contract is a minor league contract
+      if (String(data[i][j]).search(/\(MiLC\)$/g) !== -1) {
+        coloredCells.minorContractCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+      // If the contract is possibly for arbitration
+      if (String(data[i][j]).search(/\(A.?\)$/g) !== -1) {
+        coloredCells.arbitrationCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+    } // for inner loop
+  } // for outer loop
+
+  return coloredCells;
+}
+
+/**
  * Displays the remaining budget by subtracting budget from salary
  */
 function remainingBudget() {
