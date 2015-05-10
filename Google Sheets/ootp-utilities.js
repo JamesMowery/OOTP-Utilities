@@ -80,6 +80,20 @@ function findContractCells(sheet, data) {
 }
 
 /**
+ * Applies color to specific cells based on contract status
+ */
+function colorCells() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+
+  // Locate the cells with contract data
+  var cells = findContractCells(sheet, data);
+
+  // TODO: Color the actual cells
+
+}
+
+/**
  * Displays the remaining budget by subtracting budget from salary
  */
 function remainingBudget() {
