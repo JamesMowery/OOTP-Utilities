@@ -8,9 +8,63 @@ function onOpen() {
     .addItem('Create Salary Totals', 'addSalaries')
     .addSeparator()
     .addItem('Create Budget Estimates', 'addBudgets')
+    .addItem('Create Remaining Budget', 'remainingBudget')
     .addSeparator()
     .addItem('Show Options', 'showSidebar')
     .addToUi();
+}
+
+/**
+ * Displays the remaining budget by subtracting budget from salary
+ */
+function remainingBudget() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  var ui = SpreadsheetApp.getUi();
+
+  var hasBudget = false;
+  var budgetTerm = "BUDGET";
+  var i, j;
+  var response = "";
+  var lastRow;
+  var currentRow;
+  var numberFormat = "$#,##0_)";
+
+  // Check to see if budget estimates have been rendered
+  for (i in data) {
+    for (j in data[i]) {
+      // If the budgetTerm is found, continue
+      if (String(data[i][j]).search(budgetTerm) !== -1) {
+        currentRow = Number(i) + 1;
+        hasBudget = true;
+      }
+    }
+  }
+
+  // If the budgetTerm isn't found, ask the user to create one or cancel
+  if (hasBudget === false) {
+
+    response = ui.alert("No budget has been created.",
+                            "Would you like to create a budget now? \
+                        \(If not, this operation will cancel.\)",
+                            ui.ButtonSet.YES_NO);
+    // Create the budgets, or stop the operation, depending on the response
+    if (String(response) ===  "YES") {
+      addBudgets();
+    }
+    else if (String(response) === "NO") {
+      return null;
+    }
+
+    // Select the last row
+    currentRow = Number(sheet.getDataRange().getHeight()) + 1;
+  }
+
+  sheet.getRange(currentRow + 1, 1).setValue("REMAINING");
+  sheet.getRange(currentRow + 1, 2, 1,
+                 Number(sheet.getDataRange().getWidth()) - 1)
+                 .setValue(Utilities.formatString('=MINUS(B%s, B%s)', currentRow, currentRow - 1))
+                 .setNumberFormat(numberFormat);
 }
 
 /**
@@ -18,7 +72,7 @@ function onOpen() {
  */
 function getBudgets() {
   var ui = SpreadsheetApp.getUi();
-  
+
   var result = null;
   var budgets = {
       'last': 0,
@@ -26,7 +80,7 @@ function getBudgets() {
       'next': 0,
       'two': 0
     };
-  
+
   // Prompt the user for last year's budget
   result = ui.prompt(
     'Let\'s set up your budgets!',
@@ -34,7 +88,7 @@ function getBudgets() {
     ui.ButtonSet.OK_CANCEL
   );
   budgets.last = Number(result.getResponseText());
-  
+
   // Prompt the user for this year's budget
   result = ui.prompt(
     'This Year',
@@ -42,7 +96,7 @@ function getBudgets() {
     ui.ButtonSet.OK_CANCEL
   );
   budgets.current = Number(result.getResponseText());
-  
+
   // Prompt the user for next year's projected budget
   result = ui.prompt(
     'Next Year',
@@ -50,7 +104,7 @@ function getBudgets() {
     ui.ButtonSet.OK_CANCEL
   );
   budgets.next = Number(result.getResponseText());
-  
+
   // Prompt the user for the projected budget in two years
   result = ui.prompt(
     'Two Years Ahead',
@@ -83,7 +137,7 @@ function getBudgets() {
  */
 function addBudgets() {
   var sheet = SpreadsheetApp.getActiveSheet();
-  
+
   var budgetTerm = "BUDGET";
   var selectedTermBudget = false;
   var currentRow = 0;
