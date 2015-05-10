@@ -4,8 +4,9 @@
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('OOTP')
-    .addItem('Clean Salaries', 'cleanSalaries')
-    .addItem('Create Salary Totals', 'addSalaries')
+    .addItem('Color Cells', 'colorCells')
+    .addItem('Format Salaries', 'cleanSalaries')
+    .addItem('Compute Salary Totals', 'addSalaries')
     .addSeparator()
     .addItem('Create Budget Estimates', 'addBudgets')
     .addItem('Create Remaining Budget', 'remainingBudget')
