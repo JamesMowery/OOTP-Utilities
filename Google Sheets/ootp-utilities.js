@@ -80,49 +80,49 @@ function colorCells() {
   // Locate the cells with contract data
   var cells = findContractCells(sheet, data);
 
-  var playerOptionColor;
-  var teamOptionColor;
-  var vestingOptionColor;
-  var autoContractColor;
-  var arbitrationColor;
-  var minorContractColor;
+  var playerOptionColor = "#FB8072";
+  var teamOptionColor = "#B7D2FF";
+  var vestingOptionColor = "#BEBADA";
+  var autoContractColor = "#8DD3C7";
+  var arbitrationColor = "#FFFFB3";
+  var minorContractColor = "#ECECEC";
 
   var i;
 
   // Color player option cells
   for (i in cells.playerOptionCells) {
     sheet.getRange(cells.playerOptionCells[i][0],
-      cells.playerOptionCells[i][1]).setBackgroundRGB(250, 135, 135);
+      cells.playerOptionCells[i][1]).setBackground(playerOptionColor);
   }
 
   // Color team option cells
   for (i in cells.teamOptionCells) {
     sheet.getRange(cells.teamOptionCells[i][0],
-      cells.teamOptionCells[i][1]).setBackgroundRGB(135, 176, 230);
+      cells.teamOptionCells[i][1]).setBackground(teamOptionColor);
   }
 
   // Color vesting option cells
   for (i in cells.vestingOptionCells) {
     sheet.getRange(cells.vestingOptionCells[i][0],
-      cells.vestingOptionCells[i][1]).setBackgroundRGB(230, 135, 206);
+      cells.vestingOptionCells[i][1]).setBackground(vestingOptionColor);
   }
 
   // Color auto contract cells
   for (i in cells.autoContractCells) {
     sheet.getRange(cells.autoContractCells[i][0],
-      cells.autoContractCells[i][1]).setBackgroundRGB(135, 230, 179);
+      cells.autoContractCells[i][1]).setBackground(autoContractColor);
   }
 
   // Color arbitration contract cells
   for (i in cells.arbitrationCells) {
     sheet.getRange(cells.arbitrationCells[i][0],
-      cells.arbitrationCells[i][1]).setBackgroundRGB(230, 230, 135);
+      cells.arbitrationCells[i][1]).setBackground(arbitrationColor);
   }
 
   // Color minor league contract cells
   for (i in cells.minorContractCells) {
     sheet.getRange(cells.minorContractCells[i][0],
-      cells.minorContractCells[i][1]).setBackgroundRGB(135, 230, 228);
+      cells.minorContractCells[i][1]).setBackground(minorContractColor);
   }
 
   // TODO: Add option to remove all coloring
