@@ -28,16 +28,7 @@ function findContractCells(sheet, data) {
     'minorContractCells': []
   };
 
-  var playerOptionColor;
-  var teamOptionColor;
-  var vestingOptionColor;
-  var autoContractColor;
-  var arbitrationColor;
-  var minorContractColor;
-
-  var i = 0, j = 0;
-  var playerContractHits = 0;
-  var teamContractHits = 0;
+  var i, j;
 
   // Search for contract specifications
   for (i in data) {
@@ -89,37 +80,49 @@ function colorCells() {
   // Locate the cells with contract data
   var cells = findContractCells(sheet, data);
 
-  var i;
+  var playerOptionColor;
+  var teamOptionColor;
+  var vestingOptionColor;
+  var autoContractColor;
+  var arbitrationColor;
+  var minorContractColor;
 
+  var i;
 
   // Color player option cells
   for (i in cells.playerOptionCells) {
-    sheet.getRange(cells.playerOptionCells[i][0], cells.playerOptionCells[i][1]).setBackgroundRGB(250, 135, 135);
+    sheet.getRange(cells.playerOptionCells[i][0],
+      cells.playerOptionCells[i][1]).setBackgroundRGB(250, 135, 135);
   }
 
   // Color team option cells
   for (i in cells.teamOptionCells) {
-    sheet.getRange(cells.teamOptionCells[i][0], cells.teamOptionCells[i][1]).setBackgroundRGB(135, 176, 230);
+    sheet.getRange(cells.teamOptionCells[i][0],
+      cells.teamOptionCells[i][1]).setBackgroundRGB(135, 176, 230);
   }
 
   // Color vesting option cells
   for (i in cells.vestingOptionCells) {
-    sheet.getRange(cells.vestingOptionCells[i][0], cells.vestingOptionCells[i][1]).setBackgroundRGB(230, 135, 206);
+    sheet.getRange(cells.vestingOptionCells[i][0],
+      cells.vestingOptionCells[i][1]).setBackgroundRGB(230, 135, 206);
   }
 
   // Color auto contract cells
   for (i in cells.autoContractCells) {
-    sheet.getRange(cells.autoContractCells[i][0], cells.autoContractCells[i][1]).setBackgroundRGB(135, 230, 179);
+    sheet.getRange(cells.autoContractCells[i][0],
+      cells.autoContractCells[i][1]).setBackgroundRGB(135, 230, 179);
   }
 
   // Color arbitration contract cells
   for (i in cells.arbitrationCells) {
-    sheet.getRange(cells.arbitrationCells[i][0], cells.arbitrationCells[i][1]).setBackgroundRGB(230, 230, 135);
+    sheet.getRange(cells.arbitrationCells[i][0],
+      cells.arbitrationCells[i][1]).setBackgroundRGB(230, 230, 135);
   }
 
   // Color minor league contract cells
   for (i in cells.minorContractCells) {
-    sheet.getRange(cells.minorContractCells[i][0], cells.minorContractCells[i][1]).setBackgroundRGB(135, 230, 228);
+    sheet.getRange(cells.minorContractCells[i][0],
+      cells.minorContractCells[i][1]).setBackgroundRGB(135, 230, 228);
   }
 
   // TODO: Add option to remove all coloring
