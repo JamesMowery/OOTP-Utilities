@@ -16,6 +16,16 @@ function onOpen() {
 }
 
 /**
+ * Removes background colors from the spreadsheet
+ */
+function removeColor(sheet) {
+  var totalCols = Number(sheet.getDataRange().getWidth()) - 1;
+  // var totalRows;
+
+  // TODO: Search for first total/budget/remaining identifier
+}
+
+/**
  * Locates cells that have contract data
  */
 function findContractCells(sheet, data) {
@@ -125,8 +135,6 @@ function colorCells() {
     sheet.getRange(cells.minorContractCells[i][0],
       cells.minorContractCells[i][1]).setBackground(minorContractColor);
   }
-
-  // TODO: Add option to remove all coloring
 }
 
 /**
