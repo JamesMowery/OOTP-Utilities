@@ -4,14 +4,153 @@
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('OOTP')
-    .addItem('Clean Salaries', 'cleanSalaries')
-    .addItem('Create Salary Totals', 'addSalaries')
+    .addItem('Format Salaries', 'cleanSalaries')
+    .addItem('Compute Salary Totals', 'addSalaries')
     .addSeparator()
-    .addItem('Create Budget Estimates', 'addBudgets')
-    .addItem('Create Remaining Budget', 'remainingBudget')
+    .addItem('Compute Budget Estimates', 'addBudgets')
+    .addItem('Compute Remaining Budget', 'remainingBudget')
+    .addSeparator()
+    .addItem('Color Cell Backgrounds \(Optional; do this first!\)', 'colorCells')
+    .addItem('Remove Cell Backgrounds', 'removeColor')
     .addSeparator()
     .addItem('Show Options', 'showSidebar')
     .addToUi();
+}
+
+/**
+ * Removes background colors from the spreadsheet
+ */
+function removeColor() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+
+  var totalCols = Number(sheet.getDataRange().getWidth()) - 1;
+  var lastNumberRow, i, j;
+
+  // Search for the TOTAL row
+  for (i in data) {
+    for (j in data[i]) {
+      if (String(data[i][j]).search("TOTAL") !== -1) {
+        lastNumberRow = Number(i) - 1;
+      }
+    }
+  }
+
+  sheet.getRange(2, 2, lastNumberRow,
+                 Number(sheet.getDataRange().getWidth()) - 1)
+                 .setBackground("white")
+}
+
+/**
+ * Locates cells that have contract data
+ */
+function findContractCells(sheet, data) {
+  var coloredCells = {
+    'playerOptionCells': [],
+    'teamOptionCells': [],
+    'vestingOptionCells': [],
+    'autoContractCells': [],
+    'arbitrationCells': [],
+    'minorContractCells': []
+  };
+
+  var i, j;
+
+  // Search for contract specifications
+  for (i in data) {
+    for (j in data[i]) {
+
+      // If the contract is a player option
+      if (String(data[i][j]).search(/\(P\)$/g) !== -1) {
+        coloredCells.playerOptionCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+      // If the contract is a team option
+      if (String(data[i][j]).search(/\(T\)$/g) !== -1) {
+        coloredCells.teamOptionCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+      // If the contract is a vesting option
+      if (String(data[i][j]).search(/\(V\)$/g) !== -1) {
+        coloredCells.vestingOptionCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+      // If the contract is a auto contract
+      if (String(data[i][j]).search(/\(auto\)$/g) !== -1) {
+        coloredCells.autoContractCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+      // If the contract is a minor league contract
+      if (String(data[i][j]).search(/\(MiLC\)$/g) !== -1) {
+        coloredCells.minorContractCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+      // If the contract is possibly for arbitration
+      if (String(data[i][j]).search(/\(A.?\)$/g) !== -1) {
+        coloredCells.arbitrationCells.push([Number(i) + 1, Number(j) + 1]);
+      }
+
+    } // for inner loop
+  } // for outer loop
+
+  return coloredCells;
+}
+
+/**
+ * Applies color to specific cells based on contract status
+ */
+function colorCells() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+
+  // Locate the cells with contract data
+  var cells = findContractCells(sheet, data);
+
+  // Sets the colors for each contract type
+  var playerOptionColor = "#FB8072";
+  var teamOptionColor = "#B7D2FF";
+  var vestingOptionColor = "#BEBADA";
+  var autoContractColor = "#8DD3C7";
+  var arbitrationColor = "#FFFFB3";
+  var minorContractColor = "#ECECEC";
+
+  var i;
+
+  // Color player option cells
+  for (i in cells.playerOptionCells) {
+    sheet.getRange(cells.playerOptionCells[i][0],
+      cells.playerOptionCells[i][1]).setBackground(playerOptionColor);
+  }
+
+  // Color team option cells
+  for (i in cells.teamOptionCells) {
+    sheet.getRange(cells.teamOptionCells[i][0],
+      cells.teamOptionCells[i][1]).setBackground(teamOptionColor);
+  }
+
+  // Color vesting option cells
+  for (i in cells.vestingOptionCells) {
+    sheet.getRange(cells.vestingOptionCells[i][0],
+      cells.vestingOptionCells[i][1]).setBackground(vestingOptionColor);
+  }
+
+  // Color auto contract cells
+  for (i in cells.autoContractCells) {
+    sheet.getRange(cells.autoContractCells[i][0],
+      cells.autoContractCells[i][1]).setBackground(autoContractColor);
+  }
+
+  // Color arbitration contract cells
+  for (i in cells.arbitrationCells) {
+    sheet.getRange(cells.arbitrationCells[i][0],
+      cells.arbitrationCells[i][1]).setBackground(arbitrationColor);
+  }
+
+  // Color minor league contract cells
+  for (i in cells.minorContractCells) {
+    sheet.getRange(cells.minorContractCells[i][0],
+      cells.minorContractCells[i][1]).setBackground(minorContractColor);
+  }
 }
 
 /**
@@ -63,7 +202,8 @@ function remainingBudget() {
   sheet.getRange(currentRow + 1, 1).setValue("REMAINING");
   sheet.getRange(currentRow + 1, 2, 1,
                  Number(sheet.getDataRange().getWidth()) - 1)
-                 .setValue(Utilities.formatString('=MINUS(B%s, B%s)', currentRow, currentRow - 1))
+                 .setValue(Utilities.formatString('=MINUS(B%s, B%s)',
+                           currentRow, currentRow - 1))
                  .setNumberFormat(numberFormat);
 }
 
@@ -74,6 +214,7 @@ function getBudgets() {
   var ui = SpreadsheetApp.getUi();
 
   var result = null;
+  var response = "";
   var budgets = {
       'last': 0,
       'current': 0,
@@ -81,13 +222,16 @@ function getBudgets() {
       'two': 0
     };
 
+
   // Prompt the user for last year's budget
   result = ui.prompt(
     'Let\'s set up your budgets!',
     'What was your previous year\'s budget?',
     ui.ButtonSet.OK_CANCEL
   );
-  budgets.last = Number(result.getResponseText());
+
+  budgets.last = Number(String(result.getResponseText())
+                        .replace(/\...$/g, "").replace(/(\D)/g, ""));
 
   // Prompt the user for this year's budget
   result = ui.prompt(
@@ -95,7 +239,8 @@ function getBudgets() {
     'What is this year\'s projected budget?',
     ui.ButtonSet.OK_CANCEL
   );
-  budgets.current = Number(result.getResponseText());
+  budgets.current = Number(String(result.getResponseText())
+                           .replace(/\...$/g, "").replace(/(\D)/g, ""));
 
   // Prompt the user for next year's projected budget
   result = ui.prompt(
@@ -103,7 +248,8 @@ function getBudgets() {
     'What is your budget projected to be next year?',
     ui.ButtonSet.OK_CANCEL
   );
-  budgets.next = Number(result.getResponseText());
+  budgets.next = Number(String(result.getResponseText())
+                        .replace(/\...$/g, "").replace(/(\D)/g, ""));
 
   // Prompt the user for the projected budget in two years
   result = ui.prompt(
@@ -111,7 +257,8 @@ function getBudgets() {
     'What is your budget projected to be in two years?',
     ui.ButtonSet.OK_CANCEL
   );
-  budgets.two = Number(result.getResponseText());
+  budgets.two = Number(String(result.getResponseText())
+                       .replace(/\...$/g, "").replace(/(\D)/g, ""));
 
   /*
   // Process the user's response.
@@ -144,7 +291,7 @@ function addBudgets() {
   var currentCol = 0;
   var numberFormat = "$#,##0_)";
   var data = null;
-  var i = 0, j = 0;
+  var i, j;
   var budgets = null;
 
   // If selected cell contains budgetTerm,
@@ -319,10 +466,8 @@ function cleanSalaries() {
         leadingSlice = cellText.search(/[^A-Za-z]k(?=\()?/g);
         leadingNumber = cellText.slice(leadingSlice, leadingSlice + 1);
 
-        /**
-         * If the leading number isn't a 0, include the leading number,
-         * and then add the appropriate number of zeros.
-         */
+        // If the leading number isn't a 0, include the leading number,
+        // and then add the appropriate number of zeros
         if (leadingNumber != "0") {
           // Add the leading number
           cellText = cellText.replace(/[^A-Za-z]k(?=\()?/g,
@@ -359,5 +504,4 @@ function cleanSalaries() {
   // Set the formatting of the numbers
   sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
                  10).setNumberFormat(numberFormat);
-
 }
