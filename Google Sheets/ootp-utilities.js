@@ -4,12 +4,14 @@
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('OOTP')
-    .addItem('Color Cells', 'colorCells')
     .addItem('Format Salaries', 'cleanSalaries')
     .addItem('Compute Salary Totals', 'addSalaries')
     .addSeparator()
-    .addItem('Create Budget Estimates', 'addBudgets')
-    .addItem('Create Remaining Budget', 'remainingBudget')
+    .addItem('Compute Budget Estimates', 'addBudgets')
+    .addItem('Compute Remaining Budget', 'remainingBudget')
+    .addSeparator()
+    .addItem('Color Cell Backgrounds \(Optional; do this first!\)', 'colorCells')
+    .addItem('Remove Cell Backgrounds', 'removeColor')
     .addSeparator()
     .addItem('Show Options', 'showSidebar')
     .addToUi();
@@ -18,11 +20,25 @@ function onOpen() {
 /**
  * Removes background colors from the spreadsheet
  */
-function removeColor(sheet) {
-  var totalCols = Number(sheet.getDataRange().getWidth()) - 1;
-  // var totalRows;
+function removeColor() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var data = sheet.getDataRange().getValues();
 
-  // TODO: Search for first total/budget/remaining identifier
+  var totalCols = Number(sheet.getDataRange().getWidth()) - 1;
+  var lastNumberRow, i, j;
+
+  // Search for the TOTAL row
+  for (i in data) {
+    for (j in data[i]) {
+      if (String(data[i][j]).search("TOTAL") !== -1) {
+        lastNumberRow = Number(i) - 1;
+      }
+    }
+  }
+
+  sheet.getRange(2, 2, lastNumberRow,
+                 Number(sheet.getDataRange().getWidth()) - 1)
+                 .setBackground("white")
 }
 
 /**
