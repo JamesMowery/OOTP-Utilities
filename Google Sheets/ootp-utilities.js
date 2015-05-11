@@ -10,7 +10,8 @@ function onOpen() {
     .addItem('Compute Budget Estimates', 'addBudgets')
     .addItem('Compute Remaining Budget', 'remainingBudget')
     .addSeparator()
-    .addItem('Color Cell Backgrounds \(Optional; do this first!\)', 'colorCells')
+    .addItem('Color Cell Backgrounds \(Optional; do this first!\)',
+             'colorCells')
     .addItem('Remove Cell Backgrounds', 'removeColor')
     .addSeparator()
     .addItem('Show Options', 'showSidebar')
@@ -36,6 +37,7 @@ function removeColor() {
     }
   }
 
+  // Sets the range of cells containing contract data to white
   sheet.getRange(2, 2, lastNumberRow,
                  Number(sheet.getDataRange().getWidth()) - 1)
                  .setBackground("white")
@@ -221,7 +223,6 @@ function getBudgets() {
       'next': 0,
       'two': 0
     };
-
 
   // Prompt the user for last year's budget
   result = ui.prompt(
