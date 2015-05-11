@@ -80,6 +80,7 @@ function colorCells() {
   // Locate the cells with contract data
   var cells = findContractCells(sheet, data);
 
+  // Sets the colors for each contract type
   var playerOptionColor = "#FB8072";
   var teamOptionColor = "#B7D2FF";
   var vestingOptionColor = "#BEBADA";
@@ -258,7 +259,7 @@ function addBudgets() {
   var currentCol = 0;
   var numberFormat = "$#,##0_)";
   var data = null;
-  var i = 0, j = 0;
+  var i, j;
   var budgets = null;
 
   // If selected cell contains budgetTerm,
@@ -433,10 +434,8 @@ function cleanSalaries() {
         leadingSlice = cellText.search(/[^A-Za-z]k(?=\()?/g);
         leadingNumber = cellText.slice(leadingSlice, leadingSlice + 1);
 
-        /**
-         * If the leading number isn't a 0, include the leading number,
-         * and then add the appropriate number of zeros.
-         */
+        // If the leading number isn't a 0, include the leading number,
+        // and then add the appropriate number of zeros
         if (leadingNumber != "0") {
           // Add the leading number
           cellText = cellText.replace(/[^A-Za-z]k(?=\()?/g,
@@ -473,5 +472,4 @@ function cleanSalaries() {
   // Set the formatting of the numbers
   sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
                  10).setNumberFormat(numberFormat);
-
 }
