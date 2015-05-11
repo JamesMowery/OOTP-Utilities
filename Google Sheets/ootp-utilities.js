@@ -178,7 +178,8 @@ function remainingBudget() {
   sheet.getRange(currentRow + 1, 1).setValue("REMAINING");
   sheet.getRange(currentRow + 1, 2, 1,
                  Number(sheet.getDataRange().getWidth()) - 1)
-                 .setValue(Utilities.formatString('=MINUS(B%s, B%s)', currentRow, currentRow - 1))
+                 .setValue(Utilities.formatString('=MINUS(B%s, B%s)',
+                           currentRow, currentRow - 1))
                  .setNumberFormat(numberFormat);
 }
 
@@ -189,6 +190,7 @@ function getBudgets() {
   var ui = SpreadsheetApp.getUi();
 
   var result = null;
+  var response = "";
   var budgets = {
       'last': 0,
       'current': 0,
@@ -196,13 +198,16 @@ function getBudgets() {
       'two': 0
     };
 
+
   // Prompt the user for last year's budget
   result = ui.prompt(
     'Let\'s set up your budgets!',
     'What was your previous year\'s budget?',
     ui.ButtonSet.OK_CANCEL
   );
-  budgets.last = Number(result.getResponseText());
+
+  budgets.last = Number(String(result.getResponseText())
+                        .replace(/\...$/g, "").replace(/(\D)/g, ""));
 
   // Prompt the user for this year's budget
   result = ui.prompt(
@@ -210,7 +215,8 @@ function getBudgets() {
     'What is this year\'s projected budget?',
     ui.ButtonSet.OK_CANCEL
   );
-  budgets.current = Number(result.getResponseText());
+  budgets.current = Number(String(result.getResponseText())
+                           .replace(/\...$/g, "").replace(/(\D)/g, ""));
 
   // Prompt the user for next year's projected budget
   result = ui.prompt(
@@ -218,7 +224,8 @@ function getBudgets() {
     'What is your budget projected to be next year?',
     ui.ButtonSet.OK_CANCEL
   );
-  budgets.next = Number(result.getResponseText());
+  budgets.next = Number(String(result.getResponseText())
+                        .replace(/\...$/g, "").replace(/(\D)/g, ""));
 
   // Prompt the user for the projected budget in two years
   result = ui.prompt(
@@ -226,7 +233,8 @@ function getBudgets() {
     'What is your budget projected to be in two years?',
     ui.ButtonSet.OK_CANCEL
   );
-  budgets.two = Number(result.getResponseText());
+  budgets.two = Number(String(result.getResponseText())
+                       .replace(/\...$/g, "").replace(/(\D)/g, ""));
 
   /*
   // Process the user's response.
