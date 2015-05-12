@@ -14,7 +14,7 @@ function onOpen() {
              'colorCells')
     .addItem('Remove Cell Backgrounds', 'removeColor')
     .addSeparator()
-    .addItem('Generate Settings Sheet \(Placeholder\)', 'generateSettingsSheet')
+    .addItem('Generate/Reset Settings Sheet', 'generateSettingsSheet')
     .addToUi();
 }
 
@@ -27,7 +27,7 @@ function generateSettingsSheet() {
 
   var result = null;
 
-  // Search for the sheet by the name of "settings"
+  // Locate the the "settings" sheet
   var sheet = spreadsheet.getSheetByName("settings");
 
   // If the sheet exists, ask if the user would like to reset it
@@ -42,7 +42,7 @@ function generateSettingsSheet() {
       sheet.activate();
     }
   }
-  // If the sheet doesn't exist, create a new sheet and name it "settings"
+  // If the sheet doesn't exist, create a new sheet called "settings"
   else {
     sheet = spreadsheet.insertSheet().setName("settings").activate();
   }
