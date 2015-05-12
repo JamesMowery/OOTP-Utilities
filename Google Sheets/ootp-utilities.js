@@ -5,8 +5,8 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('OOTP')
     .addItem('Format Salaries', 'cleanSalaries')
-    .addItem('Compute Salary Totals', 'addSalaries')
     .addSeparator()
+    .addItem('Compute Salary Totals', 'addSalaries')
     .addItem('Compute Budget Estimates', 'addBudgets')
     .addItem('Compute Remaining Budget', 'remainingBudget')
     .addSeparator()
@@ -14,8 +14,40 @@ function onOpen() {
              'colorCells')
     .addItem('Remove Cell Backgrounds', 'removeColor')
     .addSeparator()
-    .addItem('Show Options', 'showSidebar')
+    .addItem('Generate Settings Sheet \(Placeholder\)', 'generateSettingsSheet')
     .addToUi();
+}
+
+/**
+ * Generates a settings sheet
+ */
+function generateSettingsSheet() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var ui = SpreadsheetApp.getUi();
+
+  var result = null;
+
+  // Search for the sheet by the name of "settings"
+  var sheet = spreadsheet.getSheetByName("settings");
+
+  // If the sheet exists, ask if the user would like to reset it
+  if (sheet !== null) {
+    result = ui.alert("Settings sheet already exists",
+                      "Would you like to reset your settings sheet?",
+                      ui.ButtonSet.YES_NO);
+    if (result == "YES") {
+      sheet.clear().activate();
+    }
+    else {
+      sheet.activate();
+    }
+  }
+  // If the sheet doesn't exist, create a new sheet and name it "settings"
+  else {
+    sheet = spreadsheet.insertSheet().setName("settings").activate();
+  }
+
+  return sheet;
 }
 
 /**
