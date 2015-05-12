@@ -198,7 +198,7 @@ function remainingBudget() {
     }
 
     // Select the last row
-    currentRow = Number(sheet.getDataRange().getHeight()) + 1;
+    currentRow = Number(sheet.getDataRange().getHeight());
   }
 
   sheet.getRange(currentRow + 1, 1).setValue("REMAINING");
