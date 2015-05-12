@@ -214,69 +214,82 @@ function remainingBudget() {
  */
 function getBudgets() {
   var ui = SpreadsheetApp.getUi();
-
-  var result = null;
-  var response = "";
   var budgets = {
       'last': 0,
       'current': 0,
       'next': 0,
       'two': 0
-    };
+  };
 
-  // Prompt the user for last year's budget
-  result = ui.prompt(
-    'Let\'s set up your budgets!',
-    'What was your previous year\'s budget?',
-    ui.ButtonSet.OK_CANCEL
-  );
+  var result = null;
+  var response = "";
 
-  budgets.last = Number(String(result.getResponseText())
-                        .replace(/\...$/g, "").replace(/(\D)/g, ""));
+  // Set the default button state to OK
+  var button = ui.Button.OK;
 
-  // Prompt the user for this year's budget
-  result = ui.prompt(
-    'This Year',
-    'What is this year\'s projected budget?',
-    ui.ButtonSet.OK_CANCEL
-  );
-  budgets.current = Number(String(result.getResponseText())
-                           .replace(/\...$/g, "").replace(/(\D)/g, ""));
+  // While the button state is set to OK, prompt for responses
+  while (button == ui.Button.OK) {
+    // Prompt the user for last year's budget
+    result = ui.prompt(
+      'Let\'s set up your budgets!',
+      'What was your previous year\'s budget?',
+      ui.ButtonSet.OK_CANCEL
+    );
+    button = result.getSelectedButton();
 
-  // Prompt the user for next year's projected budget
-  result = ui.prompt(
-    'Next Year',
-    'What is your budget projected to be next year?',
-    ui.ButtonSet.OK_CANCEL
-  );
-  budgets.next = Number(String(result.getResponseText())
-                        .replace(/\...$/g, "").replace(/(\D)/g, ""));
+    if (button !== ui.Button.OK) {
+      break;
+    }
+    budgets.last = Number(String(result.getResponseText())
+                          .replace(/\...$/g, "").replace(/(\D)/g, ""));
 
-  // Prompt the user for the projected budget in two years
-  result = ui.prompt(
-    'Two Years Ahead',
-    'What is your budget projected to be in two years?',
-    ui.ButtonSet.OK_CANCEL
-  );
-  budgets.two = Number(String(result.getResponseText())
-                       .replace(/\...$/g, "").replace(/(\D)/g, ""));
+    // Prompt the user for this year's budget
+    result = ui.prompt(
+      'This Year',
+      'What is this year\'s projected budget?',
+      ui.ButtonSet.OK_CANCEL
+    );
+    button = result.getSelectedButton();
 
-  /*
-  // Process the user's response.
-  button = result.getSelectedButton();
-  text = result.getResponseText();
-  if (button == ui.Button.OK) {
-    // Feedback, if needed
-  } else if (button == ui.Button.CANCEL) {
-    // User clicked "Cancel".
-    ui.alert('Your budgets were not set.');
-  } else if (button == ui.Button.CLOSE) {
-    // User clicked X in the title bar.
-    ui.alert('Your budgets were not set.');
+    if (button !== ui.Button.OK) {
+      break;
+    }
+    budgets.current = Number(String(result.getResponseText())
+                             .replace(/\...$/g, "").replace(/(\D)/g, ""));
+
+    // Prompt the user for next year's projected budget
+    result = ui.prompt(
+      'Next Year',
+      'What is your budget projected to be next year?',
+      ui.ButtonSet.OK_CANCEL
+    );
+    button = result.getSelectedButton();
+
+    if (button !== ui.Button.OK) {
+      break;
+    }
+    budgets.next = Number(String(result.getResponseText())
+                          .replace(/\...$/g, "").replace(/(\D)/g, ""));
+
+    // Prompt the user for the projected budget in two years
+    result = ui.prompt(
+      'Two Years Ahead',
+      'What is your budget projected to be in two years?',
+      ui.ButtonSet.OK_CANCEL
+    );
+    button = result.getSelectedButton();
+
+    if (button !== ui.Button.OK) {
+      break;
+    }
+    budgets.two = Number(String(result.getResponseText())
+                         .replace(/\...$/g, "").replace(/(\D)/g, ""));
+
+    return budgets;
   }
-  */
 
-  return budgets;
+  // If the while loop breaks, return nothing
+  return null;
 }
 
 /**
@@ -285,6 +298,7 @@ function getBudgets() {
  */
 function addBudgets() {
   var sheet = SpreadsheetApp.getActiveSheet();
+  var ui = SpreadsheetApp.getUi();
 
   var budgetTerm = "BUDGET";
   var selectedTermBudget = false;
@@ -328,25 +342,30 @@ function addBudgets() {
   // Retrieve the budgets from the user
   budgets = getBudgets();
 
-  // Set the budget values in the cells
-  sheet.getRange(currentRow, 2).setValue(budgets.last);
-  sheet.getRange(currentRow, 3).setValue(budgets.current);
-  sheet.getRange(currentRow, 4).setValue(budgets.next);
-  sheet.getRange(currentRow, 5).setValue(budgets.two);
+  if (budgets !== null) {
+    // Set the budget values in the cells
+    sheet.getRange(currentRow, 2).setValue(budgets.last);
+    sheet.getRange(currentRow, 3).setValue(budgets.current);
+    sheet.getRange(currentRow, 4).setValue(budgets.next);
+    sheet.getRange(currentRow, 5).setValue(budgets.two);
 
-  // Set the TREND formula for the remaining columns
-  sheet.getRange(currentRow, 6)
-    .setValue(
-      Utilities.formatString(
-        '=TREND(B%s:E%s, B1:E1, F1:K1)',
-        currentRow, currentRow
-      )
-    );
+    // Set the TREND formula for the remaining columns
+    sheet.getRange(currentRow, 6)
+      .setValue(
+        Utilities.formatString(
+          '=TREND(B%s:E%s, B1:E1, F1:K1)',
+          currentRow, currentRow
+        )
+      );
 
-  // Set the number formats for the column
-  sheet.getRange(currentRow, 2, 1,
-                 sheet.getDataRange().getWidth() - 1
-                ).setNumberFormat(numberFormat);
+    // Set the number formats for the column
+    sheet.getRange(currentRow, 2, 1,
+                   sheet.getDataRange().getWidth() - 1
+                  ).setNumberFormat(numberFormat);
+  }
+  else {
+    ui.alert("Your budget was not set");
+  }
 }
 
 /**
