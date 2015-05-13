@@ -18,6 +18,57 @@ function onOpen() {
     .addToUi();
 }
 
+function getSetting(option) {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getSheetByName("settings");
+  var cell = null;
+
+  // Target the cell of the requested setting
+  switch (option) {
+    case "freeze":
+      cell = sheet.getRange(2, 2, 1, 1);
+      break;
+    case "player":
+      cell = sheet.getRange(5, 2, 1, 1);
+      break;
+    case "team":
+      cell = sheet.getRange(6, 2, 1, 1);
+      break;
+    case "vesting":
+      cell = sheet.getRange(7, 2, 1, 1);
+      break;
+    case "auto":
+      cell = sheet.getRange(8, 2, 1, 1);
+      break;
+    case "arbitration":
+      cell = sheet.getRange(9, 2, 1, 1);
+      break;
+    case "minor":
+      cell = sheet.getRange(10, 2, 1, 1);
+      break;
+    case "format":
+      cell = sheet.getRange(13, 2, 1, 1);
+      break;
+    case "salary":
+      cell = sheet.getRange(16, 2, 1, 1);
+      break;
+    case "budget":
+      cell = sheet.getRange(17, 2, 1, 1);
+      break;
+    case "remaining":
+      cell = sheet.getRange(18, 2, 1, 1);
+      break;
+    default:
+      cell = undefined;
+      break;
+  }
+
+  // If an appropriate cell was chosen, return it
+  if (cell !== undefined) {
+    return cell.getValue();
+  }
+}
+
 /**
  * Fills in a settings sheet with the initial settings
  */
