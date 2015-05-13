@@ -19,7 +19,77 @@ function onOpen() {
 }
 
 /**
- * Generates a settings sheet
+ * Fills in a settings sheet with the initial settings
+ */
+function populateSettingsSheet() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getSheetByName("settings");
+
+  var cell = null;
+  var rule = null;
+
+  cell = sheet.getRange(1, 1, 1, 1).setValue("General Options")
+         .setFontWeight("Bold");
+  cell = sheet.getRange(1, 2, 1, 1).setValue("Value \(Yes/No\)")
+         .setFontWeight("Bold");
+
+  cell = sheet.getRange(2, 1, 1, 1).setValue("Freeze First Row/Column");
+  cell = sheet.getRange(2, 2, 1, 1).setValue("Yes");
+  // Set validation to require a Yes/No answer with dropdown
+  rule = SpreadsheetApp.newDataValidation()
+         .requireValueInList(['Yes', 'No'], true).build();
+  cell.setDataValidation(rule);
+
+  cell = sheet.getRange(4, 1, 1, 1).setValue("Color Options")
+         .setFontWeight("Bold");
+  cell = sheet.getRange(4, 2, 1, 1).setValue("Color Value \(#XXXXXX\)")
+         .setFontWeight("Bold");
+
+  cell = sheet.getRange(5, 1, 1, 1).setValue("Player Option");
+  cell = sheet.getRange(5, 2, 1, 1).setValue("#FB8072");
+
+  cell = sheet.getRange(6, 1, 1, 1).setValue("Team Option");
+  cell = sheet.getRange(6, 2, 1, 1).setValue("#B7D2FF");
+
+  cell = sheet.getRange(7, 1, 1, 1).setValue("Vesting Option");
+  cell = sheet.getRange(7, 2, 1, 1).setValue("#BEBADA");
+
+  cell = sheet.getRange(8, 1, 1, 1).setValue("Auto Contract");
+  cell = sheet.getRange(8, 2, 1, 1).setValue("#8DD3C7");
+
+  cell = sheet.getRange(9, 1, 1, 1).setValue("Arbitration");
+  cell = sheet.getRange(9, 2, 1, 1).setValue("#FFFFB3");
+
+  cell = sheet.getRange(10, 1, 1, 1).setValue("Minor League");
+  cell = sheet.getRange(10, 2, 1, 1).setValue("#ECECEC");
+
+  cell = sheet.getRange(12, 1, 1, 1).setValue("Number Format")
+         .setFontWeight("Bold");
+  cell = sheet.getRange(12, 2, 1, 1).setValue("For Help, Visit:")
+         .setFontWeight("Bold");
+  cell = sheet.getRange(12, 3, 1, 1)
+         .setValue("https://support.google.com/docs/answer/56470?hl=en");
+
+  cell = sheet.getRange(13, 1, 1, 1).setValue("Format");
+  cell = sheet.getRange(13, 2, 1, 1).setValue("$#,##0_)");
+
+  cell = sheet.getRange(15, 1, 1, 1).setValue("Row Text Descriptions")
+         .setFontWeight("Bold");
+  cell = sheet.getRange(15, 2, 1, 1).setValue("Text")
+         .setFontWeight("Bold");
+
+  cell = sheet.getRange(16, 1, 1, 1).setValue("Salary Total");
+  cell = sheet.getRange(16, 2, 1, 1).setValue("TOTAL");
+
+  cell = sheet.getRange(17, 1, 1, 1).setValue("Budget Total");
+  cell = sheet.getRange(17, 2, 1, 1).setValue("BUDGET");
+
+  cell = sheet.getRange(18, 1, 1, 1).setValue("Remaining Total");
+  cell = sheet.getRange(18, 2, 1, 1).setValue("REMAINING");
+}
+
+/**
+ * (Re)Generates a settings sheet
  */
 function generateSettingsSheet() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
@@ -197,6 +267,7 @@ function remainingBudget() {
 
   var hasBudget = false;
   var budgetTerm = "BUDGET";
+  var remainingTerm = "REMAINING";
   var i, j;
   var response = "";
   var lastRow;
@@ -233,7 +304,7 @@ function remainingBudget() {
     currentRow = Number(sheet.getDataRange().getHeight());
   }
 
-  sheet.getRange(currentRow + 1, 1).setValue("REMAINING");
+  sheet.getRange(currentRow + 1, 1).setValue(remainingTerm);
   sheet.getRange(currentRow + 1, 2, 1,
                  Number(sheet.getDataRange().getWidth()) - 1)
                  .setValue(Utilities.formatString('=MINUS(B%s, B%s)',
