@@ -202,13 +202,15 @@ function removeColor() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var data = sheet.getDataRange().getValues();
 
+  var totalTerm = getSettings("salary");
+
   var totalCols = Number(sheet.getDataRange().getWidth()) - 1;
   var lastNumberRow, i, j;
 
   // Search for the TOTAL row
   for (i in data) {
     for (j in data[i]) {
-      if (String(data[i][j]).search("TOTAL") !== -1) {
+      if (String(data[i][j]).search(totalTerm) !== -1) {
         lastNumberRow = Number(i) - 1;
       }
     }
