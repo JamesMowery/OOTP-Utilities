@@ -202,7 +202,7 @@ function removeColor() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var data = sheet.getDataRange().getValues();
 
-  var totalTerm = getSettings("salary");
+  var totalTerm = getSetting("salary");
 
   var totalCols = Number(sheet.getDataRange().getWidth()) - 1;
   var lastNumberRow, i, j;
