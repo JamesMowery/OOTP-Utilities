@@ -20,8 +20,18 @@ function onOpen() {
 
 function getSetting(option) {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = spreadsheet.getSheetByName("settings");
+  var ui = SpreadsheetApp.getUi();
   var cell = null;
+
+  var sheet = spreadsheet.getSheetByName("settings");
+
+  if (sheet == null || sheet == "") {
+    ui.alert("Settings Sheet Not Found",
+      "A settings sheet could not be located. One will now be created.",
+      ui.ButtonSet.OK);
+      generateSettingsSheet();
+      sheet = spreadsheet.getSheetByName("settings");
+  }
 
   // Target the cell of the requested setting
   switch (option) {
@@ -61,6 +71,18 @@ function getSetting(option) {
     default:
       cell = undefined;
       break;
+  }
+
+  if (cell == null || cell == "") {
+    var response = ui.alert("Setting Not Found",
+      "Your settings sheet might be broken. Reset it to default?",
+      ui.ButtonSet.OK_CANCEL);
+    if (response == "OK") {
+      generateSettingsSheet();
+    }
+    else {
+      return null;
+    }
   }
 
   // If an appropriate cell was chosen, return it
@@ -158,6 +180,7 @@ function generateSettingsSheet() {
                       ui.ButtonSet.YES_NO);
     if (result == "YES") {
       sheet.clear().activate();
+      populateSettingsSheet();
     }
     else {
       sheet.activate();
@@ -166,6 +189,7 @@ function generateSettingsSheet() {
   // If the sheet doesn't exist, create a new sheet called "settings"
   else {
     sheet = spreadsheet.insertSheet().setName("settings").activate();
+    populateSettingsSheet();
   }
 
   return sheet;
@@ -262,12 +286,12 @@ function colorCells() {
   var cells = findContractCells(sheet, data);
 
   // Sets the colors for each contract type
-  var playerOptionColor = "#FB8072";
-  var teamOptionColor = "#B7D2FF";
-  var vestingOptionColor = "#BEBADA";
-  var autoContractColor = "#8DD3C7";
-  var arbitrationColor = "#FFFFB3";
-  var minorContractColor = "#ECECEC";
+  var playerOptionColor = getSetting("player");
+  var teamOptionColor = getSetting("team");
+  var vestingOptionColor = getSetting("vesting");
+  var autoContractColor = getSetting("auto");
+  var arbitrationColor = getSetting("arbitration");
+  var minorContractColor = getSetting("minor");
 
   var i;
 
@@ -316,14 +340,13 @@ function remainingBudget() {
   var data = sheet.getDataRange().getValues();
   var ui = SpreadsheetApp.getUi();
 
+  var budgetTerm = getSetting("budget");
+  var remainingTerm = getSetting("remaining");
+  var numberFormat = getSetting("format");
+
+  var i, j, lastRow, currentRow;
   var hasBudget = false;
-  var budgetTerm = "BUDGET";
-  var remainingTerm = "REMAINING";
-  var i, j;
   var response = "";
-  var lastRow;
-  var currentRow;
-  var numberFormat = "$#,##0_)";
 
   // Check to see if budget estimates have been rendered
   for (i in data) {
@@ -454,14 +477,15 @@ function addBudgets() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var ui = SpreadsheetApp.getUi();
 
-  var budgetTerm = "BUDGET";
+  var budgetTerm = getSetting("budget");
+  var numberFormat = getSetting("format");
+
   var selectedTermBudget = false;
   var currentRow = 0;
   var currentCol = 0;
-  var numberFormat = "$#,##0_)";
   var data = null;
-  var i, j;
   var budgets = null;
+  var i, j;
 
   // If selected cell contains budgetTerm,
   // insert TREND formula to calculate future budgets
@@ -529,12 +553,13 @@ function addBudgets() {
 function addSalaries() {
   var sheet = SpreadsheetApp.getActiveSheet();
 
-  var totalTerm = "TOTAL";
+  var totalTerm = getSetting("salary");
+  var numberFormat = getSetting("format");
+
   var selectedTermTotal = false;
   var cell = [];
   var currentRow = 0;
   var currentCol = 0;
-  var numberFormat = "$#,##0_)";
   var data = null;
   var i, j;
 
@@ -573,11 +598,13 @@ function addSalaries() {
 function cleanSalaries() {
   var sheet = SpreadsheetApp.getActiveSheet();
 
+  var numberFormat = getSetting("format");
+  var freezeRows = getSetting("freeze");
+
   var result = [];
   var cellText = "";
   var leadingSlice = 0;
   var leadingNumber = "";
-  var numberFormat = "$#,##0_)";
   var rangeSelectorEnabled = false;
   var data = null;
   var i, j;
@@ -592,9 +619,16 @@ function cleanSalaries() {
                           sheet.getDataRange().getWidth() - 2)
                           .getValues();
 
-    // Freeze the first row and column for pretty formatting
-    sheet.setFrozenRows(1);
-    sheet.setFrozenColumns(1);
+    if (freezeRows == "Yes")
+    {
+      // Freeze the first row and column for pretty formatting
+      sheet.setFrozenRows(1);
+      sheet.setFrozenColumns(1);
+    }
+    else {
+      sheet.setFrozenRows(0);
+      sheet.setFrozenColumns(0);
+    }
   }
 
   // Search through each cell to locate data that needs modified,
