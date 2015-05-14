@@ -4,20 +4,87 @@
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('OOTP')
-    .addItem('Format Salaries', 'cleanSalaries')
+    .addItem('Format Data & Generate Totals', 'doEverything')
+    .addItem('Format Data & Generate Totals (With Color)', 'doEverythingColor')
     .addSeparator()
+    .addItem('Format Data Only', 'cleanSalaries')
+    .addItem('Format Data Only \(With Color\)', 'cleanSalariesColor')
+    .addSeparator()
+    .addItem('Generate All Totals', 'generateAllTotals')
     .addItem('Compute Salary Totals', 'addSalaries')
     .addItem('Compute Budget Estimates', 'addBudgets')
     .addItem('Compute Remaining Budget', 'remainingBudget')
     .addSeparator()
-    .addItem('Color Cell Backgrounds \(Optional; do this first!\)',
+    .addItem('Add Cell Coloring \(Optional; do this first!\)',
              'colorCells')
-    .addItem('Remove Cell Backgrounds', 'removeColor')
+    .addItem('Remove Cell Coloring', 'removeColor')
     .addSeparator()
-    .addItem('Generate/Reset Settings Sheet', 'generateSettingsSheet')
+    .addItem('Add/Reset Settings Sheet', 'generateSettingsSheet')
     .addToUi();
 }
 
+/**
+ * Executes all primary functions after adding color
+ */
+function doEverythingColor() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getActiveSheet();
+
+  var settingsSheet = spreadsheet.getSheetByName("settings");
+
+  if (settingsSheet == null || settingsSheet == undefined) {
+    generateSettingsSheet();
+  }
+
+  sheet.activate();
+
+  colorCells();
+  cleanSalaries();
+  generateAllTotals();
+}
+
+/**
+ * Executes all primary functions
+ */
+function doEverything() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getActiveSheet();
+
+  var settingsSheet = spreadsheet.getSheetByName("settings");
+
+  if (settingsSheet == null || settingsSheet == undefined) {
+    generateSettingsSheet();
+  }
+
+  sheet.activate();
+
+  cleanSalaries();
+  generateAllTotals();
+}
+
+/**
+ * Executes all functions related to computing totals
+ */
+function generateAllTotals() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getActiveSheet();
+
+  var settingsSheet = spreadsheet.getSheetByName("settings");
+
+  if (settingsSheet == null || settingsSheet == undefined) {
+    generateSettingsSheet();
+  }
+
+  sheet.activate();
+
+  addSalaries();
+  addBudgets();
+  remainingBudget();
+}
+
+/**
+ * Retreives an individual setting
+ */
 function getSetting(option) {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var ui = SpreadsheetApp.getUi();
@@ -591,6 +658,18 @@ function addSalaries() {
                  1, sheet.getDataRange().getWidth() - 1)
                  .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow))
                  .setNumberFormat(numberFormat);
+}
+
+/**
+ * Executes the cleanSalaries function after adding color
+ */
+function cleanSalariesColor() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getActiveSheet();
+
+  colorCells();
+  sheet.activate();
+  cleanSalaries();
 }
 
 /**
