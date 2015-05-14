@@ -1,51 +1,29 @@
 # OOTP Utilities by James Mowery
 
+
+[![OOTP Utilities](https://raw.githubusercontent.com/JamesMowery/OOTP-Utilities/master/docs/img/13.png)](https://raw.githubusercontent.com/JamesMowery/OOTP-Utilities/master/docs/img/13.png)
+
 ## About This Project
 
-This GitHub repository contains OOTP Utilities, which is a collection of code snippets (or otherwise) designed to help players of the game Out of the Park (OOTP) baseball.
+**OOTP Utilities** is a collection of JavaScript code snippets that integrate with **Google Sheets**, and helps players of **Out of the Park Baseball 16**.
 
-## Google Sheets Utilities
+It enables users to easily:
 
-Included are several Google Sheets custom functions that strips and correctly formats data from the Salaries page extracted from Out of the Park Baseball.
+* View salary information for the future
+* Calculate current and future estimated budgets
+* Add visual definition to your salary spreadsheet (color)
+* Make the data from the "Salaries" screen in OOTP usable with formulas
+* Enable you to play out what-if scenarios for current and
+  future contract discussions
 
-I've created a visual quickstart guide, and it's **highly recommended** for getting to grips with how to use the JavaScript code within Google Sheets. View it here: [OOTP Utilities Quickstart Guide](http://imgur.com/a/IYIPC)
+## Getting Started
 
-**Instructions:**
+View the [Visual Installation Guide](https://github.com/JamesMowery/OOTP-Utilities/wiki/OOTP-Utilities-Visual-Install-Guide) to get started. It contains all the information to get started with OOTP Utilities.
 
-Navigate to Team > Front Office > Salaries.
+Then view the [Visual Usage Guide](https://github.com/JamesMowery/OOTP-Utilities/wiki/OOTP-Utilities-Visual-Usage-Guide) to see how all the functions work with your Salary data.
 
+## Credits
 
-Use the "Open In External Browser" option.
+This code is created and maintained by [James Mowery](http://mowery.co/).
 
-
-Copy from the top left headers (Name/Years) to the end of the "TOTAL" section.
-
-Paste this information into a new Google Sheet.
-
-Within this Google Sheet, navigate to Tools > Script Editor
-
-Copy and paste the code from within ootp-utilities.js.
-
-Refresh (or re-open) your Google Sheet.
-
-You will now see a new menu called "OOTP".
-
-### Salary Cleaner
-
-Salary Cleaner strips out extra data and properly formats the resulting text into data that can be easily manipulated and utilized within a spreadsheet.
-
-* Removed parenthetical information
-* Removes punctuation
-* Expands numeric shorthands (m and k) to proper amounts
-* Appropriately formats the results for display and modification
-* Enables the usage of formulas on the results
-
-### Salary Totals
-
-Salary Totals searches the spreadsheet for the word "TOTAL", and then populates that row with a SUM formula that generates dynamic totals (as opposed to the static totals that OOTP generates).
-
-### Credits
-
-Find more information about the author, James Mowery, at his homepage: http://mowery.co/
-
-Special thanks to Out of the Park Developments for creating a wonderful baseball simulation that I've spent countless hours enjoying.
+And a special thanks to Out of the Park Developments for creating such a wonderful baseball simulation that I've spent countless hours enjoying.
