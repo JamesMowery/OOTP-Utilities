@@ -4,18 +4,19 @@
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('OOTP')
-    .addItem('Format Data & Generate Totals', 'doEverything')
-    .addItem('Format Data & Generate Totals (With Color)', 'doEverythingColor')
+    .addItem('Format Data & Compute Totals', 'doEverything')
+    .addItem('Format Data & Compute Totals (With Color)', 'doEverythingColor')
     .addSeparator()
     .addItem('Format Data Only', 'cleanSalaries')
     .addItem('Format Data Only \(With Color\)', 'cleanSalariesColor')
     .addSeparator()
-    .addItem('Generate All Totals', 'generateAllTotals')
+    .addItem('Compute All Totals \(After Formatting Data\)', 'generateAllTotals')
+    .addSeparator()
     .addItem('Compute Salary Totals', 'addSalaries')
     .addItem('Compute Budget Estimates', 'addBudgets')
     .addItem('Compute Remaining Budget', 'remainingBudget')
     .addSeparator()
-    .addItem('Add Cell Coloring \(Optional; do this first!\)',
+    .addItem('Add/Update Cell Coloring \(Before Formatting Data\)',
              'colorCells')
     .addItem('Remove Cell Coloring', 'removeColor')
     .addSeparator()
@@ -32,7 +33,7 @@ function doEverythingColor() {
 
   var settingsSheet = spreadsheet.getSheetByName("settings");
 
-  if (settingsSheet == null || settingsSheet == undefined) {
+  if (settingsSheet == null) {
     generateSettingsSheet();
   }
 
@@ -52,7 +53,7 @@ function doEverything() {
 
   var settingsSheet = spreadsheet.getSheetByName("settings");
 
-  if (settingsSheet == null || settingsSheet == undefined) {
+  if (settingsSheet == null) {
     generateSettingsSheet();
   }
 
@@ -71,7 +72,7 @@ function generateAllTotals() {
 
   var settingsSheet = spreadsheet.getSheetByName("settings");
 
-  if (settingsSheet == null || settingsSheet == undefined) {
+  if (settingsSheet == null) {
     generateSettingsSheet();
   }
 
@@ -92,7 +93,7 @@ function getSetting(option) {
 
   var sheet = spreadsheet.getSheetByName("settings");
 
-  if (sheet == null || sheet == "") {
+  if (sheet == null) {
     ui.alert("Settings Sheet Not Found",
       "A settings sheet could not be located. One will now be created.",
       ui.ButtonSet.OK);
@@ -140,7 +141,7 @@ function getSetting(option) {
       break;
   }
 
-  if (cell == null || cell == "") {
+  if (cell == null || cell == undefined || cell == "") {
     var response = ui.alert("Setting Not Found",
       "Your settings sheet might be broken. Reset it to default?",
       ui.ButtonSet.OK_CANCEL);
@@ -153,7 +154,7 @@ function getSetting(option) {
   }
 
   // If an appropriate cell was chosen, return it
-  if (cell !== undefined) {
+  if (cell !== undefined || cell !== null || cell !== "") {
     return cell.getValue();
   }
 }
@@ -355,12 +356,12 @@ function colorCells() {
   var cells = findContractCells(sheet, data);
 
   // Sets the colors for each contract type
-  var playerOptionColor = getSetting("player");
-  var teamOptionColor = getSetting("team");
-  var vestingOptionColor = getSetting("vesting");
-  var autoContractColor = getSetting("auto");
-  var arbitrationColor = getSetting("arbitration");
-  var minorContractColor = getSetting("minor");
+  var playerOptionColor   = getSetting("player");
+  var teamOptionColor     = getSetting("team");
+  var vestingOptionColor  = getSetting("vesting");
+  var autoContractColor   = getSetting("auto");
+  var arbitrationColor    = getSetting("arbitration");
+  var minorContractColor  = getSetting("minor");
 
   var i;
 
@@ -432,16 +433,11 @@ function remainingBudget() {
   if (hasBudget === false) {
 
     response = ui.alert("No budget has been created.",
-                            "Would you like to create a budget now? \
-                        \(If not, this operation will cancel.\)",
-                            ui.ButtonSet.YES_NO);
-    // Create the budgets, or stop the operation, depending on the response
-    if (String(response) ===  "YES") {
-      addBudgets();
-    }
-    else if (String(response) === "NO") {
-      return null;
-    }
+                            "A budget will now be generated.",
+                            ui.ButtonSet.OK);
+
+    // Create the budgets
+    addBudgets();
 
     // Select the last row
     currentRow = Number(sheet.getDataRange().getHeight());
@@ -534,7 +530,7 @@ function getBudgets() {
     return budgets;
   }
 
-  // If the while loop breaks, return nothing
+  // If the user cancels, return nothing
   return null;
 }
 
@@ -549,23 +545,12 @@ function addBudgets() {
   var budgetTerm = getSetting("budget");
   var numberFormat = getSetting("format");
 
-  var selectedTermBudget = false;
   var currentRow = 0;
   var currentCol = 0;
-  var data = null;
   var budgets = null;
   var i, j;
 
-  // If selected cell contains budgetTerm,
-  // insert TREND formula to calculate future budgets
-  if (sheet.getActiveCell().getValue() === budgetTerm) {
-    // TODO: If selected cell contains budgetTerm
-    // expand formulas to the right
-    data = sheet.getDataRange().getValues();
-  }
-  else {
-    data = sheet.getDataRange().getValues();
-  }
+  var data = sheet.getDataRange().getValues();
 
   // Search for the term denoting the budget row
   for (i in data) {
@@ -589,7 +574,7 @@ function addBudgets() {
   // Retrieve the budgets from the user
   budgets = getBudgets();
 
-  if (budgets !== null) {
+  if (budgets !== null || budgets !== undefined) {
     // Set the budget values in the cells
     sheet.getRange(currentRow, 2).setValue(budgets.last);
     sheet.getRange(currentRow, 3).setValue(budgets.current);
@@ -597,21 +582,17 @@ function addBudgets() {
     sheet.getRange(currentRow, 5).setValue(budgets.two);
 
     // Set the TREND formula for the remaining columns
-    sheet.getRange(currentRow, 6)
-      .setValue(
-        Utilities.formatString(
-          '=TREND(B%s:E%s, B1:E1, F1:K1)',
-          currentRow, currentRow
-        )
-      );
+    sheet.getRange(currentRow, 6).setValue(Utilities
+          .formatString('=TREND(B%s:E%s, B1:E1, F1:K1)',
+          currentRow, currentRow));
 
     // Set the number formats for the column
     sheet.getRange(currentRow, 2, 1,
-                   sheet.getDataRange().getWidth() - 1
-                  ).setNumberFormat(numberFormat);
+                   sheet.getDataRange().getWidth() - 1)
+                  .setNumberFormat(numberFormat);
   }
   else {
-    ui.alert("Your budget was not set");
+    ui.alert("Your budget was not set.");
   }
 }
 
@@ -625,22 +606,12 @@ function addSalaries() {
   var totalTerm = getSetting("salary");
   var numberFormat = getSetting("format");
 
-  var selectedTermTotal = false;
   var cell = [];
   var currentRow = 0;
   var currentCol = 0;
-  var data = null;
   var i, j;
 
-  // If selected cell contains totalTerm, expand SUM formulas,
-  // otherwise collect all data and search for totalTerm
-  if (sheet.getActiveCell().getValue() === totalTerm) {
-    // TODO: If selected cell contains totalTerm
-    // expand formulas to the right
-  }
-  else {
-    data = sheet.getDataRange().getValues();
-  }
+  var data = sheet.getDataRange().getValues();
 
   // Search for the term denoting the totals row
   for (i in data) {
@@ -654,8 +625,8 @@ function addSalaries() {
   }
 
   // Inserts the SUM formulas in the row that represents totals
-  sheet.getRange(currentRow + 1, currentCol + 2,
-                 1, sheet.getDataRange().getWidth() - 1)
+  sheet.getRange(currentRow + 1, currentCol + 2, 1,
+                 sheet.getDataRange().getWidth() - 1)
                  .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow))
                  .setNumberFormat(numberFormat);
 }
@@ -686,30 +657,24 @@ function cleanSalaries() {
   var cellText = "";
   var leadingSlice = 0;
   var leadingNumber = "";
-  var rangeSelectorEnabled = false;
   var data = null;
   var i, j;
 
-  // TODO: Detect if custom range selection is enabled via dialog box
+  // Retrieve only salary numbers
+  data = sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
+                        sheet.getDataRange().getWidth() - 2)
+                        .getValues();
 
-  if (rangeSelectorEnabled === true) {
-    // data = SpreadsheetApp.getActiveSheet().getActiveRange().getValues();
+  // If the options sheet states to freeze the rows, freeze them,
+  // otherwise, remove the frozen rows
+  if (freezeRows == "Yes")
+  {
+    sheet.setFrozenRows(1);
+    sheet.setFrozenColumns(1);
   }
   else {
-    data = sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
-                          sheet.getDataRange().getWidth() - 2)
-                          .getValues();
-
-    if (freezeRows == "Yes")
-    {
-      // Freeze the first row and column for pretty formatting
-      sheet.setFrozenRows(1);
-      sheet.setFrozenColumns(1);
-    }
-    else {
-      sheet.setFrozenRows(0);
-      sheet.setFrozenColumns(0);
-    }
+    sheet.setFrozenRows(0);
+    sheet.setFrozenColumns(0);
   }
 
   // Search through each cell to locate data that needs modified,
@@ -771,7 +736,7 @@ function cleanSalaries() {
 
       // Remove parenthetical information
       if (cellText.search(/(\(.+\))$/g) !== -1) {
-          cellText = cellText.replace(/(\(.+\))$/g, "");
+        cellText = cellText.replace(/(\(.+\))$/g, "");
       }
 
       // Assign the modifications to the array
@@ -780,17 +745,11 @@ function cleanSalaries() {
     } // Inner for loop
   } // Outer for loop
 
-  // If using a selected range, apply results to that data range,
-  // otherwise apply the results to the default range.
-  if (rangeSelectorEnabled === true) {
-    // sheet.getActiveRange().setValues(result).setNumberFormat(numberFormat);
-  }
-  else {
-    sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
-                   sheet.getDataRange().getWidth() - 2).setValues(result);
-  }
+  // Apply the results to the default range.
+  sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
+                 sheet.getDataRange().getWidth() - 2).setValues(result);
 
   // Set the formatting of the numbers
-  sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
-                 10).setNumberFormat(numberFormat);
+  sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2, 10)
+                 .setNumberFormat(numberFormat);
 }
