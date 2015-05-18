@@ -455,12 +455,17 @@ function remainingBudget() {
  * Prompts the user to enter budgets and returns those values
  */
 function getBudgets() {
+  var sheet = SpreadsheetApp.getActiveSheet();
   var ui = SpreadsheetApp.getUi();
   var budgets = {
       'current': 0,
       'next': 0,
       'two': 0
   };
+
+  var thisYear  = String(sheet.getRange(1, 2).getValue());
+  var nextYear  = String(sheet.getRange(1, 3).getValue());
+  var twoYear   = String(sheet.getRange(1, 4).getValue());
 
   var result = null;
   var response = "";
@@ -473,7 +478,7 @@ function getBudgets() {
     // Prompt the user for this year's budget
     result = ui.prompt(
       'This Year',
-      'What is this year\'s projected budget?',
+      'What is the budget for ' + thisYear + '?',
       ui.ButtonSet.OK_CANCEL
     );
     button = result.getSelectedButton();
@@ -487,7 +492,7 @@ function getBudgets() {
     // Prompt the user for next year's projected budget
     result = ui.prompt(
       'Next Year',
-      'What is your budget projected to be next year?',
+      'What is the budget for ' + nextYear + '?',
       ui.ButtonSet.OK_CANCEL
     );
     button = result.getSelectedButton();
@@ -501,7 +506,7 @@ function getBudgets() {
     // Prompt the user for the projected budget in two years
     result = ui.prompt(
       'Two Years Ahead',
-      'What is your budget projected to be in two years?',
+      'What is the budget for ' + twoYear + '?',
       ui.ButtonSet.OK_CANCEL
     );
     button = result.getSelectedButton();
