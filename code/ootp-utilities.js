@@ -23,42 +23,90 @@ function onOpen() {
 }
 
 /**
- * Executes all primary functions after adding color
+ * Formats the data with helpful prompts and a simpler expense model
  */
-function doEverythingColor() {
+function simpleFormat() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getActiveSheet();
 
+  // Locate the settings sheet if it exists
   var settingsSheet = spreadsheet.getSheetByName("settings");
 
+  // If settings sheet doesn't exist, create it
   if (settingsSheet == null) {
     generateSettingsSheet();
   }
 
+  // Reactivate the original sheet
   sheet.activate();
 
-  colorCells();
+  /*
   cleanSalaries();
   generateAllTotals();
+  */
 }
 
 /**
- * Executes all primary functions
+ * Adds color before formatting the data with the simplified model
  */
-function doEverything() {
+function simpleFormatColor() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getActiveSheet();
 
+  // Locate the settings sheet if it exists
   var settingsSheet = spreadsheet.getSheetByName("settings");
 
+  // If settings sheet doesn't exist, create it
   if (settingsSheet == null) {
     generateSettingsSheet();
   }
 
+  // Reactivate the original sheet
   sheet.activate();
 
-  cleanSalaries();
-  generateAllTotals();
+  colorCells();
+  simpleFormat();
+}
+
+/**
+ * Formats the data with additional fields for finer expense control
+ */
+function expertFormat() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getActiveSheet();
+
+  // Locate the settings sheet if it exists
+  var settingsSheet = spreadsheet.getSheetByName("settings");
+
+  // If settings sheet doesn't exist, create it
+  if (settingsSheet == null) {
+    generateSettingsSheet();
+  }
+
+  // Reactivate the original sheet
+  sheet.activate();
+}
+
+/**
+ * Adds color before formatting the data with the expert model
+ */
+function expertFormatColor() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getActiveSheet();
+
+  // Locate the settings sheet if it exists
+  var settingsSheet = spreadsheet.getSheetByName("settings");
+
+  // If settings sheet doesn't exist, create it
+  if (settingsSheet == null) {
+    generateSettingsSheet();
+  }
+
+  // Reactivate the original sheet
+  sheet.activate();
+
+  colorCells();
+  expertFormat();
 }
 
 /**
