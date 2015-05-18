@@ -463,6 +463,7 @@ function getBudgets() {
       'two': 0
   };
 
+  // Grab the correct years to be used for the prompts
   var thisYear  = String(sheet.getRange(1, 2).getValue());
   var nextYear  = String(sheet.getRange(1, 3).getValue());
   var twoYear   = String(sheet.getRange(1, 4).getValue());
@@ -477,7 +478,7 @@ function getBudgets() {
   while (button == ui.Button.OK) {
     // Prompt the user for this year's budget
     result = ui.prompt(
-      'This Year',
+      thisYear + ' Budget',
       'What is the budget for ' + thisYear + '?',
       ui.ButtonSet.OK_CANCEL
     );
@@ -491,7 +492,7 @@ function getBudgets() {
 
     // Prompt the user for next year's projected budget
     result = ui.prompt(
-      'Next Year',
+      nextYear + ' Budget',
       'What is the budget for ' + nextYear + '?',
       ui.ButtonSet.OK_CANCEL
     );
@@ -505,7 +506,7 @@ function getBudgets() {
 
     // Prompt the user for the projected budget in two years
     result = ui.prompt(
-      'Two Years Ahead',
+      twoYear + ' Budget',
       'What is the budget for ' + twoYear + '?',
       ui.ButtonSet.OK_CANCEL
     );
