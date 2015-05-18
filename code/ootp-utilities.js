@@ -4,63 +4,109 @@
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('OOTP')
-    .addItem('Format Data & Compute Totals', 'doEverything')
-    .addItem('Format Data & Compute Totals (With Color)', 'doEverythingColor')
-    .addSeparator()
-    .addItem('Format Data Only', 'cleanSalaries')
-    .addItem('Format Data Only \(With Color\)', 'cleanSalariesColor')
-    .addSeparator()
-    .addItem('Compute All Totals \(After Formatting Data\)', 'generateAllTotals')
-    .addSeparator()
-    .addItem('Compute Salary Totals', 'addSalaries')
-    .addItem('Compute Budget Estimates', 'addBudgets')
-    .addItem('Compute Remaining Budget', 'remainingBudget')
-    .addSeparator()
-    .addItem('Add/Update Cell Coloring \(Before Formatting Data\)',
-             'colorCells')
-    .addItem('Remove Cell Coloring', 'removeColor')
-    .addSeparator()
-    .addItem('Add/Reset Settings Sheet', 'generateSettingsSheet')
-    .addToUi();
+      .addItem('Simple Format', '')
+      .addItem('Simple Format \(Add Color\)', '')
+      .addSeparator()
+      .addItem('Expert Format', '')
+      .addItem('Expert Format \(Add Color\)', '')
+        .addSubMenu(ui.createMenu('Expert Functions')
+          .addItem('Format Data Only', 'cleanSalaries')
+          .addItem('Add Payroll Total', 'addSalaries')
+          .addItem('Add Budget Estimates', 'addBudgets')
+          .addItem('Add Remaining Payroll', 'remainingBudget'))
+      .addSeparator()
+      .addItem('Add/Update Color \(Do Before Format\)', 'colorCells')
+      .addItem('Remove Color', 'removeColor')
+      .addSeparator()
+      .addItem('Add/Reset Settings Sheet', 'generateSettingsSheet')
+    .addToUi()
 }
 
 /**
- * Executes all primary functions after adding color
+ * Formats the data with helpful prompts and a simpler expense model
  */
-function doEverythingColor() {
+function simpleFormat() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getActiveSheet();
 
+  // Locate the settings sheet if it exists
   var settingsSheet = spreadsheet.getSheetByName("settings");
 
+  // If settings sheet doesn't exist, create it
   if (settingsSheet == null) {
     generateSettingsSheet();
   }
 
+  // Reactivate the original sheet
+  sheet.activate();
+
+  /*
+  cleanSalaries();
+  generateAllTotals();
+  */
+}
+
+/**
+ * Adds color before formatting the data with the simplified model
+ */
+function simpleFormatColor() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getActiveSheet();
+
+  // Locate the settings sheet if it exists
+  var settingsSheet = spreadsheet.getSheetByName("settings");
+
+  // If settings sheet doesn't exist, create it
+  if (settingsSheet == null) {
+    generateSettingsSheet();
+  }
+
+  // Reactivate the original sheet
   sheet.activate();
 
   colorCells();
-  cleanSalaries();
-  generateAllTotals();
+  simpleFormat();
 }
 
 /**
- * Executes all primary functions
+ * Formats the data with additional fields for finer expense control
  */
-function doEverything() {
+function expertFormat() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getActiveSheet();
 
+  // Locate the settings sheet if it exists
   var settingsSheet = spreadsheet.getSheetByName("settings");
 
+  // If settings sheet doesn't exist, create it
   if (settingsSheet == null) {
     generateSettingsSheet();
   }
 
+  // Reactivate the original sheet
+  sheet.activate();
+}
+
+/**
+ * Adds color before formatting the data with the expert model
+ */
+function expertFormatColor() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getActiveSheet();
+
+  // Locate the settings sheet if it exists
+  var settingsSheet = spreadsheet.getSheetByName("settings");
+
+  // If settings sheet doesn't exist, create it
+  if (settingsSheet == null) {
+    generateSettingsSheet();
+  }
+
+  // Reactivate the original sheet
   sheet.activate();
 
-  cleanSalaries();
-  generateAllTotals();
+  colorCells();
+  expertFormat();
 }
 
 /**
