@@ -457,7 +457,6 @@ function remainingBudget() {
 function getBudgets() {
   var ui = SpreadsheetApp.getUi();
   var budgets = {
-      'last': 0,
       'current': 0,
       'next': 0,
       'two': 0
@@ -471,20 +470,6 @@ function getBudgets() {
 
   // While the button state is set to OK, prompt for responses
   while (button == ui.Button.OK) {
-    // Prompt the user for last year's budget
-    result = ui.prompt(
-      'Let\'s set up your budgets!',
-      'What was your previous year\'s budget?',
-      ui.ButtonSet.OK_CANCEL
-    );
-    button = result.getSelectedButton();
-
-    if (button !== ui.Button.OK) {
-      break;
-    }
-    budgets.last = Number(String(result.getResponseText())
-                          .replace(/\...$/g, "").replace(/(\D)/g, ""));
-
     // Prompt the user for this year's budget
     result = ui.prompt(
       'This Year',
@@ -576,14 +561,13 @@ function addBudgets() {
 
   if (budgets !== null || budgets !== undefined) {
     // Set the budget values in the cells
-    sheet.getRange(currentRow, 2).setValue(budgets.last);
-    sheet.getRange(currentRow, 3).setValue(budgets.current);
-    sheet.getRange(currentRow, 4).setValue(budgets.next);
-    sheet.getRange(currentRow, 5).setValue(budgets.two);
+    sheet.getRange(currentRow, 2).setValue(budgets.current);
+    sheet.getRange(currentRow, 3).setValue(budgets.next);
+    sheet.getRange(currentRow, 4).setValue(budgets.two);
 
     // Set the TREND formula for the remaining columns
-    sheet.getRange(currentRow, 6).setValue(Utilities
-          .formatString('=TREND(B%s:E%s, B1:E1, F1:K1)',
+    sheet.getRange(currentRow, 5).setValue(Utilities
+          .formatString('=TREND(B%s:D%s, B1:D1, E1:K1)',
           currentRow, currentRow));
 
     // Set the number formats for the column
