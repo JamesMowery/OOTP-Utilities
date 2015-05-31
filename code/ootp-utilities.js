@@ -356,7 +356,7 @@ function removeColor() {
   for (i in data) {
     for (j in data[i]) {
       if (String(data[i][j]).search(totalTerm) !== -1) {
-        lastNumberRow = Number(i) - 1;
+        lastNumberRow = Number(i) - 2;
       }
     }
   }
