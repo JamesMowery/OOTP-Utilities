@@ -2,8 +2,8 @@
  * Adds "OOTP" to the menu, and provides access to various functions
  */
 function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu('OOTP')
+  var ui = SpreadsheetApp.getUi()
+    ui.createMenu('OOTP')
       .addItem('Simple Format', 'simpleFormatNoColor')
       .addItem('Simple Format \(Add Color\)', 'simpleFormatColor')
       .addSeparator()
