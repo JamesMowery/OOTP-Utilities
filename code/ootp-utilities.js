@@ -87,25 +87,20 @@ function expertFormat() {
   var sheet = spreadsheet.getActiveSheet();
 
   // Clean the salaries
-  cleanSalaries(); // REMAINING PAYROLL
+  cleanSalaries();
 
+  // Render remaining
   remainingBudget();
 
   // Display Payroll Total
-  addSalaries(); // PAYROLL TOTAL
+  addSalaries();
 
   // Display Other Expenses
-  addOtherExpenses(sheet); // STAFF, SCOUTING, DRAFT, PLAYER DEV, MISC
+  addOtherExpenses(sheet);
 
-  // Calculate Other Expenses Total
-  // Display Other Expenses Total
-
-  // Get Budget
   // Display Budget
   addBudgets();
 
-  // Calculate Remaining
-  // Display Remaining
 }
 
 /**
