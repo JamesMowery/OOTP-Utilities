@@ -2,18 +2,18 @@
  * Adds "OOTP" to the menu, and provides access to various functions
  */
 function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu('OOTP')
-      .addItem('Simple Format', 'simpleFormat')
-      .addItem('Simple Format \(Add Color\)', 'simpleFormatColor')
-      .addSeparator()
+  var ui = SpreadsheetApp.getUi()
+  ui.createMenu('OOTP')
+  //  .addItem('Simple Format', 'simpleFormatNoColor')
+  //  .addItem('Simple Format \(Add Color\)', 'simpleFormatColor')
+  //  .addSeparator()
       .addItem('Expert Format', 'expertFormat')
       .addItem('Expert Format \(Add Color\)', 'expertFormatColor')
-        .addSubMenu(ui.createMenu('Expert Functions')
-          .addItem('Format Data Only', 'cleanSalaries')
-          .addItem('Add Payroll Total', 'addSalaries')
-          .addItem('Add Budget Estimates', 'addBudgets')
-          .addItem('Add Remaining Payroll', 'remainingBudget'))
+  //    .addSubMenu(
+  //      ui.createMenu('Expert Functions')
+  //        .addItem('Reformat Data', 'cleanSalaries')
+  //        .addItem('Add Budget Estimates', 'addBudgets')
+  //    )
       .addSeparator()
       .addItem('Add/Update Color \(Do Before Format\)', 'colorCells')
       .addItem('Remove Color', 'removeColor')
@@ -68,10 +68,59 @@ function simpleFormatColor() {
   simpleFormat();
 }
 
+function addOtherExpenses(sheet) {
+  // Get the last clear row
+  var lastRow = sheet.getDataRange().getHeight();
+  var lastCol = sheet.getDataRange().getWidth();
+
+  var numberFormat = getSetting("format");
+
+  // Insert other expenses
+  sheet.getRange(lastRow + 1, 1, 1, 1).setValue("STAFF EXPENSES");
+  sheet.getRange(lastRow + 2, 1, 1, 1).setValue("SCOUTING EXPENSES");
+  sheet.getRange(lastRow + 3, 1, 1, 1).setValue("DRAFT EXPENSES");
+  sheet.getRange(lastRow + 4, 1, 1, 1).setValue("PLAYER DEV EXPENSES");
+  sheet.getRange(lastRow + 5, 1, 1, 1).setValue("MISC PLAYER EXPENSES");
+
+  // Set the color and format
+  sheet.getRange(lastRow + 1, 1, 5, lastCol).setBackground("#ebd2dd");
+  sheet.getRange(lastRow + 1, 2, 5, lastCol).setNumberFormat(numberFormat);
+
+  sheet.getRange(lastRow + 6, 1, 1, 1).setValue("OTHER EXPENSES");
+  sheet.getRange(lastRow + 6, 2, 1, lastCol - 1)
+                 .setValue(Utilities.formatString('=SUM(B%s:B%s)',
+                                                  lastRow + 1, lastRow + 5))
+                 .setNumberFormat(numberFormat);
+
+  // Set the color
+  sheet.getRange(lastRow + 6, 1, 1, lastCol).setBackground("#eab8b8");
+}
+
+function expertFormat() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getActiveSheet();
+
+  // Clean the salaries
+  cleanSalaries();
+
+  // Render remaining
+  remainingBudget();
+
+  // Display Payroll Total
+  addSalaries();
+
+  // Display Other Expenses
+  addOtherExpenses(sheet);
+
+  // Display Budget
+  addBudgets();
+
+}
+
 /**
  * Formats the data with additional fields for finer expense control
  */
-function expertFormat() {
+function expertFormatNoColor() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getActiveSheet();
 
@@ -85,6 +134,8 @@ function expertFormat() {
 
   // Reactivate the original sheet
   sheet.activate();
+
+  expertFormat();
 }
 
 /**
@@ -107,26 +158,6 @@ function expertFormatColor() {
 
   colorCells();
   expertFormat();
-}
-
-/**
- * Executes all functions related to computing totals
- */
-function generateAllTotals() {
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = spreadsheet.getActiveSheet();
-
-  var settingsSheet = spreadsheet.getSheetByName("settings");
-
-  if (settingsSheet == null) {
-    generateSettingsSheet();
-  }
-
-  sheet.activate();
-
-  addSalaries();
-  addBudgets();
-  remainingBudget();
 }
 
 /**
@@ -325,7 +356,7 @@ function removeColor() {
   for (i in data) {
     for (j in data[i]) {
       if (String(data[i][j]).search(totalTerm) !== -1) {
-        lastNumberRow = Number(i) - 1;
+        lastNumberRow = Number(i) - 2;
       }
     }
   }
@@ -464,36 +495,18 @@ function remainingBudget() {
   var hasBudget = false;
   var response = "";
 
-  // Check to see if budget estimates have been rendered
-  for (i in data) {
-    for (j in data[i]) {
-      // If the budgetTerm is found, continue
-      if (String(data[i][j]).search(budgetTerm) !== -1) {
-        currentRow = Number(i) + 1;
-        hasBudget = true;
-      }
-    }
-  }
+  lastRow = Number(sheet.getDataRange().getHeight());
 
-  // If the budgetTerm isn't found, ask the user to create one or cancel
-  if (hasBudget === false) {
+  sheet.insertRowBefore(lastRow);
 
-    response = ui.alert("No budget has been created.",
-                            "A budget will now be generated.",
-                            ui.ButtonSet.OK);
+  sheet.getRange(lastRow, 1).setValue(remainingTerm)
+                 .setBackground("#daebd4");
 
-    // Create the budgets
-    addBudgets();
-
-    // Select the last row
-    currentRow = Number(sheet.getDataRange().getHeight());
-  }
-
-  sheet.getRange(currentRow + 1, 1).setValue(remainingTerm);
-  sheet.getRange(currentRow + 1, 2, 1,
+  sheet.getRange(lastRow, 2, 1,
                  Number(sheet.getDataRange().getWidth()) - 1)
-                 .setValue(Utilities.formatString('=MINUS(B%s, B%s)',
-                           currentRow, currentRow - 1))
+                 .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s)',
+                           lastRow + 8, lastRow + 1, lastRow + 7))
+                 .setBackground("#daebd4")
                  .setNumberFormat(numberFormat);
 }
 
@@ -605,7 +618,7 @@ function addBudgets() {
   // and insert the budgetTerm in the first column
   if (currentRow === 0 && currentCol === 0) {
     currentRow = Number(sheet.getDataRange().getHeight()) + 1;
-    sheet.getRange(currentRow, 1).setValue(budgetTerm);
+    sheet.getRange(currentRow, 1).setValue(budgetTerm).setBackground("#cadbf8");
   }
 
   // Retrieve the budgets from the user
@@ -625,6 +638,7 @@ function addBudgets() {
     // Set the number formats for the column
     sheet.getRange(currentRow, 2, 1,
                    sheet.getDataRange().getWidth() - 1)
+                  .setBackground("#cadbf8")
                   .setNumberFormat(numberFormat);
   }
   else {
@@ -660,10 +674,13 @@ function addSalaries() {
     }
   }
 
+  sheet.getRange(currentRow + 1, 1).setBackground("#fa8176");
+
   // Inserts the SUM formulas in the row that represents totals
   sheet.getRange(currentRow + 1, currentCol + 2, 1,
                  sheet.getDataRange().getWidth() - 1)
-                 .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow))
+                 .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow - 1))
+                 .setBackground("#fa8176")
                  .setNumberFormat(numberFormat);
 }
 
@@ -700,6 +717,8 @@ function cleanSalaries() {
   data = sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
                         sheet.getDataRange().getWidth() - 2)
                         .getValues();
+
+  // TODO: Add code that finds and checks for numbers only
 
   // If the options sheet states to freeze the rows, freeze them,
   // otherwise, remove the frozen rows
