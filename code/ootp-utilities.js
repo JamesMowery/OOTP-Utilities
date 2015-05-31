@@ -89,6 +89,8 @@ function expertFormat() {
   // Clean the salaries
   cleanSalaries(); // REMAINING PAYROLL
 
+  remainingBudget();
+
   // Display Payroll Total
   addSalaries(); // PAYROLL TOTAL
 
@@ -100,6 +102,7 @@ function expertFormat() {
 
   // Get Budget
   // Display Budget
+  addBudgets();
 
   // Calculate Remaining
   // Display Remaining
@@ -483,36 +486,18 @@ function remainingBudget() {
   var hasBudget = false;
   var response = "";
 
-  // Check to see if budget estimates have been rendered
-  for (i in data) {
-    for (j in data[i]) {
-      // If the budgetTerm is found, continue
-      if (String(data[i][j]).search(budgetTerm) !== -1) {
-        currentRow = Number(i) + 1;
-        hasBudget = true;
-      }
-    }
-  }
+  lastRow = Number(sheet.getDataRange().getHeight());
 
-  // If the budgetTerm isn't found, ask the user to create one or cancel
-  if (hasBudget === false) {
+  sheet.insertRowBefore(lastRow);
 
-    response = ui.alert("No budget has been created.",
-                            "A budget will now be generated.",
-                            ui.ButtonSet.OK);
+  sheet.getRange(lastRow, 1).setValue(remainingTerm)
+                 .setBackground("#daebd4");
 
-    // Create the budgets
-    addBudgets();
-
-    // Select the last row
-    currentRow = Number(sheet.getDataRange().getHeight());
-  }
-
-  sheet.getRange(currentRow + 1, 1).setValue(remainingTerm);
-  sheet.getRange(currentRow + 1, 2, 1,
+  sheet.getRange(lastRow, 2, 1,
                  Number(sheet.getDataRange().getWidth()) - 1)
-                 .setValue(Utilities.formatString('=MINUS(B%s, B%s)',
-                           currentRow, currentRow - 1))
+                 .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s)',
+                           lastRow + 8, lastRow + 1, lastRow + 7))
+                 .setBackground("#daebd4")
                  .setNumberFormat(numberFormat);
 }
 
@@ -624,7 +609,7 @@ function addBudgets() {
   // and insert the budgetTerm in the first column
   if (currentRow === 0 && currentCol === 0) {
     currentRow = Number(sheet.getDataRange().getHeight()) + 1;
-    sheet.getRange(currentRow, 1).setValue(budgetTerm);
+    sheet.getRange(currentRow, 1).setValue(budgetTerm).setBackground("#cadbf8");
   }
 
   // Retrieve the budgets from the user
@@ -644,6 +629,7 @@ function addBudgets() {
     // Set the number formats for the column
     sheet.getRange(currentRow, 2, 1,
                    sheet.getDataRange().getWidth() - 1)
+                  .setBackground("#cadbf8")
                   .setNumberFormat(numberFormat);
   }
   else {
