@@ -679,7 +679,7 @@ function addSalaries() {
   // Inserts the SUM formulas in the row that represents totals
   sheet.getRange(currentRow + 1, currentCol + 2, 1,
                  sheet.getDataRange().getWidth() - 1)
-                 .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow))
+                 .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow - 1))
                  .setBackground("#fa8176")
                  .setNumberFormat(numberFormat);
 }
