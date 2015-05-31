@@ -674,10 +674,13 @@ function addSalaries() {
     }
   }
 
+  sheet.getRange(currentRow + 1, 1).setBackground("#fa8176");
+
   // Inserts the SUM formulas in the row that represents totals
   sheet.getRange(currentRow + 1, currentCol + 2, 1,
                  sheet.getDataRange().getWidth() - 1)
                  .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow))
+                 .setBackground("#fa8176")
                  .setNumberFormat(numberFormat);
 }
 
