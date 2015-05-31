@@ -3,7 +3,7 @@
  */
 function onOpen() {
   var ui = SpreadsheetApp.getUi()
-    ui.createMenu('OOTP')
+  ui.createMenu('OOTP')
       .addItem('Simple Format', 'simpleFormatNoColor')
       .addItem('Simple Format \(Add Color\)', 'simpleFormatColor')
       .addSeparator()
