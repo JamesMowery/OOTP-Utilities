@@ -4,7 +4,7 @@
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('OOTP')
-      .addItem('Simple Format', 'simpleFormat')
+      .addItem('Simple Format', 'simpleFormatNoColor')
       .addItem('Simple Format \(Add Color\)', 'simpleFormatColor')
       .addSeparator()
       .addItem('Expert Format', 'expertFormat')
@@ -75,6 +75,32 @@ function expertFormat() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getActiveSheet();
 
+  // Clean the salaries
+  cleanSalaries(); // REMAINING PAYROLL
+
+  // Display Payroll Total
+  addSalaries(); // PAYROLL TOTAL
+
+  // Display Other Expenses
+  addOtherExpenses(sheet); // STAFF, SCOUTING, DRAFT, PLAYER DEV, MISC
+
+  // Calculate Other Expenses Total
+  // Display Other Expenses Total
+
+  // Get Budget
+  // Display Budget
+
+  // Calculate Remaining
+  // Display Remaining
+}
+
+/**
+ * Formats the data with additional fields for finer expense control
+ */
+function expertFormatNoColor() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getActiveSheet();
+
   // Locate the settings sheet if it exists
   var settingsSheet = spreadsheet.getSheetByName("settings");
 
@@ -85,6 +111,8 @@ function expertFormat() {
 
   // Reactivate the original sheet
   sheet.activate();
+
+  expertFormat();
 }
 
 /**
@@ -107,26 +135,6 @@ function expertFormatColor() {
 
   colorCells();
   expertFormat();
-}
-
-/**
- * Executes all functions related to computing totals
- */
-function generateAllTotals() {
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = spreadsheet.getActiveSheet();
-
-  var settingsSheet = spreadsheet.getSheetByName("settings");
-
-  if (settingsSheet == null) {
-    generateSettingsSheet();
-  }
-
-  sheet.activate();
-
-  addSalaries();
-  addBudgets();
-  remainingBudget();
 }
 
 /**
