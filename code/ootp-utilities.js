@@ -4,14 +4,16 @@
 function onOpen() {
   var ui = SpreadsheetApp.getUi()
   ui.createMenu('OOTP')
-      .addItem('Simple Format', 'simpleFormatNoColor')
-      .addItem('Simple Format \(Add Color\)', 'simpleFormatColor')
-      .addSeparator()
+  //  .addItem('Simple Format', 'simpleFormatNoColor')
+  //  .addItem('Simple Format \(Add Color\)', 'simpleFormatColor')
+  //  .addSeparator()
       .addItem('Expert Format', 'expertFormat')
       .addItem('Expert Format \(Add Color\)', 'expertFormatColor')
-        .addSubMenu(ui.createMenu('Expert Functions')
-          .addItem('Reformat Data', 'cleanSalaries')
-          .addItem('Add Budget Estimates', 'addBudgets')
+  //    .addSubMenu(
+  //      ui.createMenu('Expert Functions')
+  //        .addItem('Reformat Data', 'cleanSalaries')
+  //        .addItem('Add Budget Estimates', 'addBudgets')
+  //    )
       .addSeparator()
       .addItem('Add/Update Color \(Do Before Format\)', 'colorCells')
       .addItem('Remove Color', 'removeColor')
@@ -715,6 +717,8 @@ function cleanSalaries() {
   data = sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
                         sheet.getDataRange().getWidth() - 2)
                         .getValues();
+
+  // TODO: Add code that finds and checks for numbers only
 
   // If the options sheet states to freeze the rows, freeze them,
   // otherwise, remove the frozen rows
