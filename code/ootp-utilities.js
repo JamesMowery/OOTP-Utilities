@@ -68,9 +68,20 @@ function simpleFormatColor() {
   simpleFormat();
 }
 
-/**
- * Formats the data with additional fields for finer expense control
- */
+function addOtherExpenses(sheet) {
+  // Get the last clear row
+  var lastRow = sheet.getDataRange().getHeight();
+
+  // Insert OTHER Expenses
+  sheet.getRange(lastRow + 1, 1, 1, 1).setValue("STAFF EXPENSES");
+  sheet.getRange(lastRow + 2, 1, 1, 1).setValue("SCOUTING EXPENSES");
+  sheet.getRange(lastRow + 3, 1, 1, 1).setValue("DRAFT EXPENSES");
+  sheet.getRange(lastRow + 4, 1, 1, 1).setValue("PLAYER DEV EXPENSES");
+  sheet.getRange(lastRow + 5, 1, 1, 1).setValue("MISC PLAYER EXPENSES");
+
+  sheet.getRange(lastRow + 6, 1, 1, 1).setValue("OTHER EXPENSES");
+}
+
 function expertFormat() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getActiveSheet();
