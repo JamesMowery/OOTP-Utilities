@@ -649,6 +649,9 @@ function addBudgets() {
   if (currentRow === 0 && currentCol === 0) {
     currentRow = Number(sheet.getDataRange().getHeight()) + 1;
     sheet.getRange(currentRow, 1).setValue(budgetTerm).setBackground("#cadbf8");
+    sheet.getRange(currentRow, 2, 1, sheet.getDataRange().getWidth() - 1)
+                   .setBackground("#cadbf8")
+                   .setNumberFormat(numberFormat);
   }
 
   // Retrieve the budgets from the user
