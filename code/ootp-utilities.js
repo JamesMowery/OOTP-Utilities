@@ -557,6 +557,15 @@ function getBudgets() {
   var nextYear  = String(sheet.getRange(1, 3).getValue());
   var twoYear   = String(sheet.getRange(1, 4).getValue());
 
+  if (
+    thisYear == "" ||
+    nextYear == "" ||
+    twoYear == ""
+  ) {
+    ui.alert("Your sheet has not been formatted correctly!");
+    return null;
+  }
+
   var result = null;
   var response = "";
 
