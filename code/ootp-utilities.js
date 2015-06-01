@@ -557,6 +557,15 @@ function getBudgets() {
   var nextYear  = String(sheet.getRange(1, 3).getValue());
   var twoYear   = String(sheet.getRange(1, 4).getValue());
 
+  if (
+    thisYear == "" ||
+    nextYear == "" ||
+    twoYear == ""
+  ) {
+    ui.alert("Your sheet has not been formatted correctly!");
+    return null;
+  }
+
   var result = null;
   var response = "";
 
@@ -574,7 +583,7 @@ function getBudgets() {
     button = result.getSelectedButton();
 
     if (button !== ui.Button.OK) {
-      break;
+      return null;
     }
     budgets.current = Number(String(result.getResponseText())
                              .replace(/\...$/g, "").replace(/(\D)/g, ""));
@@ -588,7 +597,7 @@ function getBudgets() {
     button = result.getSelectedButton();
 
     if (button !== ui.Button.OK) {
-      break;
+      return null;
     }
     budgets.next = Number(String(result.getResponseText())
                           .replace(/\...$/g, "").replace(/(\D)/g, ""));
@@ -602,7 +611,7 @@ function getBudgets() {
     button = result.getSelectedButton();
 
     if (button !== ui.Button.OK) {
-      break;
+      return null;
     }
     budgets.two = Number(String(result.getResponseText())
                          .replace(/\...$/g, "").replace(/(\D)/g, ""));
@@ -657,7 +666,10 @@ function addBudgets() {
   // Retrieve the budgets from the user
   budgets = getBudgets();
 
-  if (budgets !== null || budgets !== undefined) {
+  if (budgets == null) {
+    return null;
+  }
+  else if (budgets !== null || budgets !== undefined) {
     // Set the budget values in the cells
     sheet.getRange(currentRow, 2).setValue(budgets.current);
     sheet.getRange(currentRow, 3).setValue(budgets.next);
@@ -675,7 +687,7 @@ function addBudgets() {
                   .setNumberFormat(numberFormat);
   }
   else {
-    ui.alert("Your budget was not set.");
+    return null;
   }
 }
 
