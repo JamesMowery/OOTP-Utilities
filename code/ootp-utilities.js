@@ -712,6 +712,7 @@ function addBudgets() {
 function addSalaries() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var data = sheet.getDataRange().getValues();
+  var ui = SpreadsheetApp.getUi();
 
   var totalTerm = getSetting("salary");
   var numberFormat = getSetting("format");
