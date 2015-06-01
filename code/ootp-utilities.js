@@ -28,7 +28,7 @@ function onOpen() {
 function getFirstSummaryRow() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var data = sheet.getDataRange().getValues();
-  var totalRows = sheet.getDataRange().getHeight;
+  var totalRows = sheet.getDataRange().getHeight();
 
   var totalDefault = "TOTAL";
   var totalTerm = getSetting("salary");
