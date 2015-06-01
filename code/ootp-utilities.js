@@ -23,6 +23,41 @@ function onOpen() {
 }
 
 /**
+ * Retrieves the first row of summary items
+ */
+function getFirstSummaryRow() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  var totalRows = sheet.getDataRange().getHeight;
+
+  var totalDefault = "TOTAL";
+  var totalTerm = getSetting("salary");
+  var remainingTerm = getSetting("remaining");
+
+  var firstCellRow = null;
+
+  var i, j;
+
+  // Search through the first column to find the firstCell
+  for (i in data) {
+    if (
+        data[i][0] == totalDefault ||
+        data[i][0] == totalTerm ||
+        data[i][0] == remainingTerm
+      ) {
+        return firstCellRow = Number(i);
+      }
+  }
+
+  // If the firstCell is not found, assume the last cell is it
+  if (firstCellRow == null) {
+    firstCellRow = Number(totalRows) + 1;
+  }
+
+  return firstCellRow;
+};
+
+/**
  * Formats the data with helpful prompts and a simpler expense model
  */
 function simpleFormat() {
@@ -70,7 +105,9 @@ function simpleFormatColor() {
 
 function addOtherExpenses(sheet) {
   // Get the last clear row
-  var lastRow = sheet.getDataRange().getHeight();
+
+  var lastRow = getFirstSummaryRow() + 2;
+  //var lastRow = sheet.getDataRange().getHeight();
   var lastCol = sheet.getDataRange().getWidth();
 
   var numberFormat = getSetting("format");
@@ -352,14 +389,7 @@ function removeColor() {
   var totalCols = Number(sheet.getDataRange().getWidth()) - 1;
   var lastNumberRow, i, j;
 
-  // Search for the TOTAL row
-  for (i in data) {
-    for (j in data[i]) {
-      if (String(data[i][j]).search(totalTerm) !== -1) {
-        lastNumberRow = Number(i) - 1;
-      }
-    }
-  }
+  lastNumberRow = getFirstSummaryRow() - 1;
 
   // Sets the range of cells containing contract data to white
   sheet.getRange(2, 2, lastNumberRow,
@@ -495,17 +525,17 @@ function remainingBudget() {
   var hasBudget = false;
   var response = "";
 
-  lastRow = Number(sheet.getDataRange().getHeight());
+  lastRow = getFirstSummaryRow();
 
-  sheet.insertRowBefore(lastRow);
+  sheet.insertRowBefore(lastRow + 1);
 
-  sheet.getRange(lastRow, 1).setValue(remainingTerm)
+  sheet.getRange(lastRow + 1, 1).setValue(remainingTerm)
                  .setBackground("#daebd4");
 
-  sheet.getRange(lastRow, 2, 1,
+  sheet.getRange(lastRow + 1, 2, 1,
                  Number(sheet.getDataRange().getWidth()) - 1)
                  .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s)',
-                           lastRow + 8, lastRow + 1, lastRow + 7))
+                           lastRow + 9, lastRow + 2, lastRow + 8))
                  .setBackground("#daebd4")
                  .setNumberFormat(numberFormat);
 }
@@ -619,6 +649,9 @@ function addBudgets() {
   if (currentRow === 0 && currentCol === 0) {
     currentRow = Number(sheet.getDataRange().getHeight()) + 1;
     sheet.getRange(currentRow, 1).setValue(budgetTerm).setBackground("#cadbf8");
+    sheet.getRange(currentRow, 2, 1, sheet.getDataRange().getWidth() - 1)
+                   .setBackground("#cadbf8")
+                   .setNumberFormat(numberFormat);
   }
 
   // Retrieve the budgets from the user
@@ -652,6 +685,7 @@ function addBudgets() {
  */
 function addSalaries() {
   var sheet = SpreadsheetApp.getActiveSheet();
+  var data = sheet.getDataRange().getValues();
 
   var totalTerm = getSetting("salary");
   var numberFormat = getSetting("format");
@@ -661,23 +695,12 @@ function addSalaries() {
   var currentCol = 0;
   var i, j;
 
-  var data = sheet.getDataRange().getValues();
+  currentRow = getFirstSummaryRow();
 
-  // Search for the term denoting the totals row
-  for (i in data) {
-    for (j in data[i]) {
-      if (String(data[i][j]).search(totalTerm) !== -1) {
-        // When found, store the row and column values
-        currentRow = Number(i);
-        currentCol = Number(j);
-      }
-    }
-  }
-
-  sheet.getRange(currentRow + 1, 1).setBackground("#fa8176");
+  sheet.getRange(currentRow + 2, 1).setBackground("#fa8176");
 
   // Inserts the SUM formulas in the row that represents totals
-  sheet.getRange(currentRow + 1, currentCol + 2, 1,
+  sheet.getRange(currentRow + 2, currentCol + 2, 1,
                  sheet.getDataRange().getWidth() - 1)
                  .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow - 1))
                  .setBackground("#fa8176")
@@ -714,7 +737,7 @@ function cleanSalaries() {
   var i, j;
 
   // Retrieve only salary numbers
-  data = sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
+  data = sheet.getRange(2, 2, getFirstSummaryRow() - 1,
                         sheet.getDataRange().getWidth() - 2)
                         .getValues();
 
@@ -801,10 +824,10 @@ function cleanSalaries() {
   } // Outer for loop
 
   // Apply the results to the default range.
-  sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2,
+  sheet.getRange(2, 2, getFirstSummaryRow() - 1,
                  sheet.getDataRange().getWidth() - 2).setValues(result);
 
   // Set the formatting of the numbers
-  sheet.getRange(2, 2, sheet.getDataRange().getHeight() - 2, 10)
+  sheet.getRange(2, 2, getFirstSummaryRow() - 1, 10)
                  .setNumberFormat(numberFormat);
 }
