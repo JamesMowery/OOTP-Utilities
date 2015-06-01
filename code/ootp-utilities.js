@@ -437,7 +437,7 @@ function findContractCells(sheet, data) {
       }
 
       // If the contract is a minor league contract
-      if (String(data[i][j]).search(/\(MiLC\)$/g) !== -1) {
+      if (String(data[i][j]).search(/MiLC/g) !== -1) {
         coloredCells.minorContractCells.push([Number(i) + 1, Number(j) + 1]);
       }
 
