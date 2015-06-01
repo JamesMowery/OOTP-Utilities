@@ -527,17 +527,31 @@ function remainingBudget() {
 
   lastRow = getFirstSummaryRow();
 
-  sheet.insertRowBefore(lastRow + 1);
-
-  sheet.getRange(lastRow + 1, 1).setValue(remainingTerm)
+  if (sheet.getRange(lastRow, 1).getValue() == "") {
+    sheet.getRange(lastRow, 1).setValue(remainingTerm)
                  .setBackground("#daebd4");
 
-  sheet.getRange(lastRow + 1, 2, 1,
+    sheet.getRange(lastRow, 2, 1,
                  Number(sheet.getDataRange().getWidth()) - 1)
                  .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s)',
                            lastRow + 9, lastRow + 2, lastRow + 8))
                  .setBackground("#daebd4")
                  .setNumberFormat(numberFormat);
+
+  }
+  else {
+    sheet.insertRowBefore(lastRow + 1);
+
+    sheet.getRange(lastRow + 1, 1).setValue(remainingTerm)
+                 .setBackground("#daebd4");
+
+    sheet.getRange(lastRow + 1, 2, 1,
+                 Number(sheet.getDataRange().getWidth()) - 1)
+                 .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s)',
+                           lastRow + 9, lastRow + 2, lastRow + 8))
+                 .setBackground("#daebd4")
+                 .setNumberFormat(numberFormat);
+  }
 }
 
 /**
