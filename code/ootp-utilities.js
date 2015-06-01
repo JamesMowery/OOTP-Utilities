@@ -23,9 +23,9 @@ function onOpen() {
 }
 
 /**
- *
+ * Retrieves the first row of summary items
  */
-function getFirstCellRow(sheet) {
+function getFirstSummaryRow(sheet) {
   var data = sheet.getDataRange().getValues();
   var totalRows = sheet.getDataRange().getHeight;
 
