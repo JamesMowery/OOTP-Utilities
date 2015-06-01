@@ -23,6 +23,40 @@ function onOpen() {
 }
 
 /**
+ *
+ */
+function getFirstCellRow(sheet) {
+  var data = sheet.getDataRange().getValues();
+  var totalRows = sheet.getDataRange().getHeight;
+
+  var totalDefault = "TOTAL";
+  var totalTerm = getSetting("salary");
+  var remainingTerm = getSetting("remaining");
+
+  var firstCellRow = null;
+
+  var i, j;
+
+  // Search through the first column to find the firstCell
+  for (i in data) {
+    if (
+        data[i][0] == totalDefault ||
+        data[i][0] == totalTerm ||
+        data[i][0] == remainingTerm
+      ) {
+        return firstCellRow = Number(i);
+      }
+  }
+
+  // If the firstCell is not found, assume the last cell is it
+  if (firstCellRow == null) {
+    firstCellRow = Number(totalRows) + 1;
+  }
+
+  return firstCellRow;
+};
+
+/**
  * Formats the data with helpful prompts and a simpler expense model
  */
 function simpleFormat() {
