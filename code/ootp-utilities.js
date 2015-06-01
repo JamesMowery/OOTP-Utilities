@@ -356,7 +356,7 @@ function removeColor() {
   for (i in data) {
     for (j in data[i]) {
       if (String(data[i][j]).search(totalTerm) !== -1) {
-        lastNumberRow = Number(i) - 2;
+        lastNumberRow = Number(i) - 1;
       }
     }
   }
@@ -364,7 +364,7 @@ function removeColor() {
   // Sets the range of cells containing contract data to white
   sheet.getRange(2, 2, lastNumberRow,
                  Number(sheet.getDataRange().getWidth()) - 1)
-                 .setBackground("white")
+                 .setBackground("white");
 }
 
 /**
