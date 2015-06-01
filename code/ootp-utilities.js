@@ -28,7 +28,7 @@ function onOpen() {
 function getFirstSummaryRow() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var data = sheet.getDataRange().getValues();
-  var totalRows = sheet.getDataRange().getHeight;
+  var totalRows = sheet.getDataRange().getHeight();
 
   var totalDefault = "TOTAL";
   var totalTerm = getSetting("salary");
@@ -527,17 +527,31 @@ function remainingBudget() {
 
   lastRow = getFirstSummaryRow();
 
-  sheet.insertRowBefore(lastRow + 1);
-
-  sheet.getRange(lastRow + 1, 1).setValue(remainingTerm)
+  if (sheet.getRange(lastRow, 1).getValue() == "") {
+    sheet.getRange(lastRow, 1).setValue(remainingTerm)
                  .setBackground("#daebd4");
 
-  sheet.getRange(lastRow + 1, 2, 1,
+    sheet.getRange(lastRow, 2, 1,
                  Number(sheet.getDataRange().getWidth()) - 1)
                  .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s)',
                            lastRow + 9, lastRow + 2, lastRow + 8))
                  .setBackground("#daebd4")
                  .setNumberFormat(numberFormat);
+
+  }
+  else {
+    sheet.insertRowBefore(lastRow + 1);
+
+    sheet.getRange(lastRow + 1, 1).setValue(remainingTerm)
+                 .setBackground("#daebd4");
+
+    sheet.getRange(lastRow + 1, 2, 1,
+                 Number(sheet.getDataRange().getWidth()) - 1)
+                 .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s)',
+                           lastRow + 9, lastRow + 2, lastRow + 8))
+                 .setBackground("#daebd4")
+                 .setNumberFormat(numberFormat);
+  }
 }
 
 /**
@@ -698,6 +712,7 @@ function addBudgets() {
 function addSalaries() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var data = sheet.getDataRange().getValues();
+  var ui = SpreadsheetApp.getUi();
 
   var totalTerm = getSetting("salary");
   var numberFormat = getSetting("format");
@@ -708,6 +723,25 @@ function addSalaries() {
   var i, j;
 
   currentRow = getFirstSummaryRow();
+
+  // If the salary term does not match the totalTerm in the options
+  // set it to the totalTerm or create it
+  if (String(sheet.getRange(currentRow + 2, 1).getValue()) == "TOTAL") {
+    // ui.alert("The salary total is being modified to your custom settings.");
+    sheet.getRange(currentRow + 2, 1).setValue(totalTerm);
+  }
+  else if (
+    sheet.getRange(currentRow + 2, 1).getValue() == "" ||
+    sheet.getRange(currentRow + 2, 1).getValue() == 0
+  ) {
+    // ui.alert("The salary total was not found and is \
+    //          being created based on your custom settings");
+    sheet.getRange(currentRow + 2, 1).setValue(totalTerm);
+  }
+  else {
+    ui.alert("Critical error. Check out the OOTP Utilities Visual Guide!");
+    return null;
+  }
 
   sheet.getRange(currentRow + 2, 1).setBackground("#fa8176");
 
