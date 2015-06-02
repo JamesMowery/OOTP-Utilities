@@ -4,22 +4,22 @@
 function onOpen() {
   var ui = SpreadsheetApp.getUi()
   ui.createMenu('OOTP')
-  //  .addItem('Simple Format', 'simpleFormatNoColor')
-  //  .addItem('Simple Format \(Add Color\)', 'simpleFormatColor')
-  //  .addSeparator()
-      .addItem('Expert Format', 'expertFormat')
-      .addItem('Expert Format \(Add Color\)', 'expertFormatColor')
-      .addSubMenu(
-        ui.createMenu('Expert Functions')
-  //      .addItem('Reformat Data', 'cleanSalaries')
-          .addItem('Compute Budgets', 'addBudgets')
+    .addItem('Simple Format', 'simpleFormat')
+    .addItem('Simple Format \(Add Color\)', 'simpleFormatColor')
+    .addSeparator()
+    .addItem('Expert Format', 'expertFormat')
+    .addItem('Expert Format \(Add Color\)', 'expertFormatColor')
+    .addSubMenu(
+      ui.createMenu('Expert Functions')
+  //    .addItem('Reformat Data', 'cleanSalaries')
+        .addItem('Compute Budgets', 'addBudgets')
       )
-      .addSeparator()
-      .addItem('Add/Update Color \(Do Before Format\)', 'colorCells')
-      .addItem('Remove Color', 'removeColor')
-      .addSeparator()
-      .addItem('Add/Reset Settings Sheet', 'generateSettingsSheet')
-    .addToUi()
+    .addSeparator()
+    .addItem('Add/Update Color \(Do Before Format\)', 'colorCells')
+    .addItem('Remove Color', 'removeColor')
+    .addSeparator()
+    .addItem('Add/Reset Settings Sheet', 'generateSettingsSheet')
+  .addToUi()
 }
 
 /**
