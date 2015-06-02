@@ -23,6 +23,26 @@ function onOpen() {
 }
 
 /**
+ * Checks if a format of the data has been previously initiated
+ */
+function checkFormatting(sheet) {
+  var data = sheet.getDataRange().getValues();
+  var totalRows = sheet.getDataRange().getHeight();
+
+  var remainingTerm = getSetting("remaining");
+  var i = null;
+
+  // Search for the remaining term, and return it if it's found
+  for (i in data) {
+    if (data[i][0] == remainingTerm) {
+      return Number(i);
+    }
+  }
+
+  return false;
+}
+
+/**
  * Retrieves the first row of summary items
  */
 function getFirstSummaryRow() {
@@ -148,24 +168,32 @@ function expertFormat() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getActiveSheet();
 
-  // Clean the salaries
-  cleanSalaries();
+  var formatted = checkFormatting(sheet);
 
-  // Render remaining
-  remainingBudget();
+  // If the data was not previously formatted, run normally
+  if (formatted == false) {
+    // Clean the salaries
+    cleanSalaries();
 
-  // Display Payroll Total
-  addSalaries();
+    // Render remaining
+    remainingBudget();
 
-  // Display Other Expenses
-  addOtherExpenses(sheet);
+    // Display Payroll Total
+    addSalaries();
 
-  // Display Other Income
-  addOtherIncome(sheet);
+    // Display Other Expenses
+    addOtherExpenses(sheet);
 
-  // Display Budget
-  addBudgets();
+    // Display Other Income
+    addOtherIncome(sheet);
 
+    // Display Budget
+    addBudgets();
+  }
+  // If the data was previously formatted, only clean the salary data
+  else {
+    cleanSalaries();
+  }
 }
 
 /**
