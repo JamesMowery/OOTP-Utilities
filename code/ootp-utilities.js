@@ -292,34 +292,34 @@ function getSetting(option) {
       cell = sheet.getRange(2, 2, 1, 1);
       break;
     case "player":
-      cell = sheet.getRange(5, 2, 1, 1);
-      break;
-    case "team":
-      cell = sheet.getRange(6, 2, 1, 1);
-      break;
-    case "vesting":
-      cell = sheet.getRange(7, 2, 1, 1);
-      break;
-    case "auto":
       cell = sheet.getRange(8, 2, 1, 1);
       break;
-    case "arbitration":
+    case "team":
       cell = sheet.getRange(9, 2, 1, 1);
       break;
-    case "minor":
+    case "vesting":
       cell = sheet.getRange(10, 2, 1, 1);
       break;
-    case "format":
+    case "auto":
+      cell = sheet.getRange(11, 2, 1, 1);
+      break;
+    case "arbitration":
+      cell = sheet.getRange(12, 2, 1, 1);
+      break;
+    case "minor":
       cell = sheet.getRange(13, 2, 1, 1);
       break;
+    case "format":
+      cell = sheet.getRange(5, 2, 1, 1);
+      break;
     case "salary":
-      cell = sheet.getRange(16, 2, 1, 1);
+      cell = sheet.getRange(25, 2, 1, 1);
       break;
     case "budget":
-      cell = sheet.getRange(17, 2, 1, 1);
+      cell = sheet.getRange(33, 2, 1, 1);
       break;
     case "remaining":
-      cell = sheet.getRange(18, 2, 1, 1);
+      cell = sheet.getRange(24, 2, 1, 1);
       break;
     default:
       cell = undefined;
@@ -366,52 +366,106 @@ function populateSettingsSheet() {
          .requireValueInList(['Yes', 'No'], true).build();
   cell.setDataValidation(rule);
 
-  cell = sheet.getRange(4, 1, 1, 1).setValue("Color Options")
+  //
+
+  cell = sheet.getRange(4, 1, 1, 1).setValue("Number Format")
          .setFontWeight("Bold");
-  cell = sheet.getRange(4, 2, 1, 1).setValue("Color Value \(#XXXXXX\)")
+  cell = sheet.getRange(4, 2, 1, 1).setValue("For Help, Visit:")
          .setFontWeight("Bold");
-
-  cell = sheet.getRange(5, 1, 1, 1).setValue("Player Option");
-  cell = sheet.getRange(5, 2, 1, 1).setValue("#FB8072");
-
-  cell = sheet.getRange(6, 1, 1, 1).setValue("Team Option");
-  cell = sheet.getRange(6, 2, 1, 1).setValue("#B7D2FF");
-
-  cell = sheet.getRange(7, 1, 1, 1).setValue("Vesting Option");
-  cell = sheet.getRange(7, 2, 1, 1).setValue("#BEBADA");
-
-  cell = sheet.getRange(8, 1, 1, 1).setValue("Auto Contract");
-  cell = sheet.getRange(8, 2, 1, 1).setValue("#8DD3C7");
-
-  cell = sheet.getRange(9, 1, 1, 1).setValue("Arbitration");
-  cell = sheet.getRange(9, 2, 1, 1).setValue("#FFFFB3");
-
-  cell = sheet.getRange(10, 1, 1, 1).setValue("Minor League");
-  cell = sheet.getRange(10, 2, 1, 1).setValue("#ECECEC");
-
-  cell = sheet.getRange(12, 1, 1, 1).setValue("Number Format")
-         .setFontWeight("Bold");
-  cell = sheet.getRange(12, 2, 1, 1).setValue("For Help, Visit:")
-         .setFontWeight("Bold");
-  cell = sheet.getRange(12, 3, 1, 1)
+  cell = sheet.getRange(4, 3, 1, 1)
          .setValue("https://support.google.com/docs/answer/56470?hl=en");
 
-  cell = sheet.getRange(13, 1, 1, 1).setValue("Format");
-  cell = sheet.getRange(13, 2, 1, 1).setValue("$#,##0_)");
+  cell = sheet.getRange(5, 1, 1, 1).setValue("Format");
+  cell = sheet.getRange(5, 2, 1, 1).setValue("$#,##0_)");
 
-  cell = sheet.getRange(15, 1, 1, 1).setValue("Row Text Descriptions")
+  //
+
+  cell = sheet.getRange(7, 1, 1, 1).setValue("Contract Color Options")
          .setFontWeight("Bold");
-  cell = sheet.getRange(15, 2, 1, 1).setValue("Text")
+  cell = sheet.getRange(7, 2, 1, 1).setValue("Color Value \(#XXXXXX\)")
          .setFontWeight("Bold");
 
-  cell = sheet.getRange(16, 1, 1, 1).setValue("Salary Total");
-  cell = sheet.getRange(16, 2, 1, 1).setValue("TOTAL");
+  cell = sheet.getRange(8, 1, 1, 1).setValue("Player Option");
+  cell = sheet.getRange(8, 2, 1, 1).setValue("#FB8072");
 
-  cell = sheet.getRange(17, 1, 1, 1).setValue("Budget Total");
-  cell = sheet.getRange(17, 2, 1, 1).setValue("BUDGET");
+  cell = sheet.getRange(9, 1, 1, 1).setValue("Team Option");
+  cell = sheet.getRange(9, 2, 1, 1).setValue("#B7D2FF");
 
-  cell = sheet.getRange(18, 1, 1, 1).setValue("Remaining Total");
-  cell = sheet.getRange(18, 2, 1, 1).setValue("REMAINING");
+  cell = sheet.getRange(10, 1, 1, 1).setValue("Vesting Option");
+  cell = sheet.getRange(10, 2, 1, 1).setValue("#BEBADA");
+
+  cell = sheet.getRange(11, 1, 1, 1).setValue("Auto Contract");
+  cell = sheet.getRange(11, 2, 1, 1).setValue("#8DD3C7");
+
+  cell = sheet.getRange(12, 1, 1, 1).setValue("Arbitration");
+  cell = sheet.getRange(12, 2, 1, 1).setValue("#FFFFB3");
+
+  cell = sheet.getRange(13, 1, 1, 1).setValue("Minor League");
+  cell = sheet.getRange(13, 2, 1, 1).setValue("#ECECEC");
+
+  //
+
+  cell = sheet.getRange(15, 1, 1, 1).setValue("Summary Color Options")
+         .setFontWeight("Bold");
+  cell = sheet.getRange(15, 2, 1, 1).setValue("Color Value \(#XXXXXX\)")
+         .setFontWeight("Bold");
+
+  cell = sheet.getRange(16, 1, 1, 1).setValue("Remaining Total");
+  cell = sheet.getRange(16, 2, 1, 1).setValue("#FB8072");
+
+  cell = sheet.getRange(17, 1, 1, 1).setValue("Salary Total");
+  cell = sheet.getRange(17, 2, 1, 1).setValue("#FA8176");
+
+  cell = sheet.getRange(18, 1, 1, 1).setValue("Other Individual Expenses");
+  cell = sheet.getRange(18, 2, 1, 1).setValue("#EBD2DD");
+
+  cell = sheet.getRange(19, 1, 1, 1).setValue("Other Expenses Total");
+  cell = sheet.getRange(19, 2, 1, 1).setValue("#EAB8B8");
+
+  cell = sheet.getRange(20, 1, 1, 1).setValue("Other Income Total");
+  cell = sheet.getRange(20, 2, 1, 1).setValue("#76CF77");
+
+  cell = sheet.getRange(21, 1, 1, 1).setValue("Budget Total");
+  cell = sheet.getRange(21, 2, 1, 1).setValue("#CADBF8");
+
+
+  //
+
+  cell = sheet.getRange(23, 1, 1, 1).setValue("Row Text Descriptions")
+         .setFontWeight("Bold");
+  cell = sheet.getRange(23, 2, 1, 1).setValue("Text")
+         .setFontWeight("Bold");
+
+  cell = sheet.getRange(24, 1, 1, 1).setValue("Remaining Total");
+  cell = sheet.getRange(24, 2, 1, 1).setValue("REMAINING PAYROLL");
+
+  cell = sheet.getRange(25, 1, 1, 1).setValue("Salary Total");
+  cell = sheet.getRange(25, 2, 1, 1).setValue("PAYROLL TOTAL");
+
+  cell = sheet.getRange(26, 1, 1, 1).setValue("Staff Expenses");
+  cell = sheet.getRange(26, 2, 1, 1).setValue("STAFF EXPENSES");
+
+  cell = sheet.getRange(27, 1, 1, 1).setValue("Scouting Expenses");
+  cell = sheet.getRange(27, 2, 1, 1).setValue("SCOUTING EXPENSES");
+
+  cell = sheet.getRange(28, 1, 1, 1).setValue("Draft Expenses");
+  cell = sheet.getRange(28, 2, 1, 1).setValue("DRAFT EXPENSES");
+
+  cell = sheet.getRange(29, 1, 1, 1).setValue("Player Development Expenses");
+  cell = sheet.getRange(29, 2, 1, 1).setValue("PLAYER DEV EXPENSES");
+
+  cell = sheet.getRange(30, 1, 1, 1).setValue("Miscellaneous Player Expenses");
+  cell = sheet.getRange(30, 2, 1, 1).setValue("MISC PLAYER EXPENSES");
+
+  cell = sheet.getRange(31, 1, 1, 1).setValue("Other Expenses Total");
+  cell = sheet.getRange(31, 2, 1, 1).setValue("OTHER EXPENSES");
+
+  cell = sheet.getRange(32, 1, 1, 1).setValue("Other Income Total");
+  cell = sheet.getRange(32, 2, 1, 1).setValue("OTHER INCOME");
+
+  cell = sheet.getRange(33, 1, 1, 1).setValue("Budget Total");
+  cell = sheet.getRange(33, 2, 1, 1).setValue("BUDGET");
+
 }
 
 /**
