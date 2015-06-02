@@ -103,11 +103,22 @@ function simpleFormatColor() {
   simpleFormat();
 }
 
-function addOtherExpenses(sheet) {
-  // Get the last clear row
-
+function addOtherIncome(sheet) {
   var lastRow = getFirstSummaryRow() + 2;
-  //var lastRow = sheet.getDataRange().getHeight();
+  var lastCol = sheet.getDataRange().getWidth();
+
+  var numberFormat = getSetting("format");
+
+  sheet.getRange(lastRow + 7, 1, 1, 1).setValue("OTHER INCOME");
+  sheet.getRange(lastRow + 7, 2, 1, lastCol - 1)
+                 .setNumberFormat(numberFormat);
+
+  // Set the color
+  sheet.getRange(lastRow + 7, 1, 1, lastCol).setBackground("#76CF77");
+}
+
+function addOtherExpenses(sheet) {
+  var lastRow = getFirstSummaryRow() + 2;
   var lastCol = sheet.getDataRange().getWidth();
 
   var numberFormat = getSetting("format");
@@ -148,6 +159,9 @@ function expertFormat() {
 
   // Display Other Expenses
   addOtherExpenses(sheet);
+
+  // Display Other Income
+  addOtherIncome(sheet);
 
   // Display Budget
   addBudgets();
@@ -533,8 +547,8 @@ function remainingBudget() {
 
     sheet.getRange(lastRow, 2, 1,
                  Number(sheet.getDataRange().getWidth()) - 1)
-                 .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s)',
-                           lastRow + 9, lastRow + 2, lastRow + 8))
+                 .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s + B%s)',
+                           lastRow + 10, lastRow + 2, lastRow + 8, lastRow + 9))
                  .setBackground("#daebd4")
                  .setNumberFormat(numberFormat);
 
@@ -547,8 +561,8 @@ function remainingBudget() {
 
     sheet.getRange(lastRow + 1, 2, 1,
                  Number(sheet.getDataRange().getWidth()) - 1)
-                 .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s)',
-                           lastRow + 9, lastRow + 2, lastRow + 8))
+                 .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s + B%s)',
+                           lastRow + 10, lastRow + 2, lastRow + 8, lastRow + 9))
                  .setBackground("#daebd4")
                  .setNumberFormat(numberFormat);
   }
