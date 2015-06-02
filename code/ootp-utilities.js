@@ -56,7 +56,7 @@ function getFirstSummaryRow() {
 
   var firstCellRow = null;
 
-  var i, j;
+  var i;
 
   // Search through the first column to find the firstCell
   for (i in data) {
