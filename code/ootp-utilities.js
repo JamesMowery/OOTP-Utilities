@@ -23,61 +23,6 @@ function onOpen() {
 }
 
 /**
- * Checks if a format of the data has been previously initiated
- */
-function checkFormatting(sheet) {
-  var data = sheet.getDataRange().getValues();
-  var totalRows = sheet.getDataRange().getHeight();
-
-  var remainingTerm = getSetting("remaining");
-  var i = null;
-
-  // Search for the remaining term, and return it if it's found
-  for (i in data) {
-    if (data[i][0] == remainingTerm) {
-      return Number(i);
-    }
-  }
-
-  return false;
-}
-
-/**
- * Retrieves the first row of summary items
- */
-function getFirstSummaryRow() {
-  var sheet = SpreadsheetApp.getActiveSheet();
-  var data = sheet.getDataRange().getValues();
-  var totalRows = sheet.getDataRange().getHeight();
-
-  var totalDefault = "TOTAL";
-  var totalTerm = getSetting("salary");
-  var remainingTerm = getSetting("remaining");
-
-  var firstCellRow = null;
-
-  var i;
-
-  // Search through the first column to find the firstCell
-  for (i in data) {
-    if (
-        data[i][0] == totalDefault ||
-        data[i][0] == totalTerm ||
-        data[i][0] == remainingTerm
-      ) {
-        return firstCellRow = Number(i);
-      }
-  }
-
-  // If the firstCell is not found, assume the last cell is it
-  if (firstCellRow == null) {
-    firstCellRow = Number(totalRows) + 1;
-  }
-
-  return firstCellRow;
-};
-
-/**
  * Formats the data with helpful prompts and a simpler expense model
  */
 function simpleFormat() {
@@ -210,6 +155,41 @@ function checkFormatting(sheet) {
 
   return false;
 }
+
+/**
+ * Retrieves the first row of summary items
+ */
+function getFirstSummaryRow() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  var totalRows = sheet.getDataRange().getHeight();
+
+  var totalDefault = "TOTAL";
+  var totalTerm = getSetting("salary");
+  var remainingTerm = getSetting("remaining");
+
+  var firstCellRow = null;
+
+  var i;
+
+  // Search through the first column to find the firstCell
+  for (i in data) {
+    if (
+        data[i][0] == totalDefault ||
+        data[i][0] == totalTerm ||
+        data[i][0] == remainingTerm
+      ) {
+        return firstCellRow = Number(i);
+      }
+  }
+
+  // If the firstCell is not found, assume the last cell is it
+  if (firstCellRow == null) {
+    firstCellRow = Number(totalRows) + 1;
+  }
+
+  return firstCellRow;
+};
 
 /**
  * Adds other income summary field
