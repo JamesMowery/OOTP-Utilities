@@ -677,6 +677,10 @@ function addBudgets() {
                    .setNumberFormat(numberFormat);
   }
 
+  // Clear the budget row to prevent problems with formulas
+  sheet.getRange(currentRow, 2, 1, sheet.getDataRange().getWidth() - 1)
+                 .clearContent();
+
   // Retrieve the budgets from the user
   budgets = getBudgets();
 
