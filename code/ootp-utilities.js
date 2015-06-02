@@ -130,6 +130,17 @@ function expertFormat() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getActiveSheet();
 
+  // Locate the settings sheet if it exists
+  var settingsSheet = spreadsheet.getSheetByName("settings");
+
+  // If settings sheet doesn't exist, create it
+  if (settingsSheet == null) {
+    generateSettingsSheet();
+  }
+
+  // Reactivate the original sheet
+  sheet.activate();
+
   var formatted = checkFormatting(sheet);
 
   // If the data was not previously formatted, run normally
@@ -159,27 +170,6 @@ function expertFormat() {
 }
 
 /**
- * Formats the data with additional fields for finer expense control
- */
-function expertFormatNoColor() {
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = spreadsheet.getActiveSheet();
-
-  // Locate the settings sheet if it exists
-  var settingsSheet = spreadsheet.getSheetByName("settings");
-
-  // If settings sheet doesn't exist, create it
-  if (settingsSheet == null) {
-    generateSettingsSheet();
-  }
-
-  // Reactivate the original sheet
-  sheet.activate();
-
-  expertFormat();
-}
-
-/**
  * Adds color before formatting the data with the expert model
  */
 function expertFormatColor() {
@@ -199,6 +189,26 @@ function expertFormatColor() {
 
   colorCells();
   expertFormat();
+}
+
+/**
+ * Checks if a format of the data has been previously initiated
+ */
+function checkFormatting(sheet) {
+  var data = sheet.getDataRange().getValues();
+  var totalRows = sheet.getDataRange().getHeight();
+
+  var remainingTerm = getSetting("remaining");
+  var i = null;
+
+  // Search for the remaining term, and return it if it's found
+  for (i in data) {
+    if (data[i][0] == remainingTerm) {
+      return Number(i);
+    }
+  }
+
+  return false;
 }
 
 /**
