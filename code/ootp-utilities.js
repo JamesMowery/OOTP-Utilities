@@ -41,22 +41,11 @@ function simpleFormat() {
 
   // If the data was not previously formatted, run normally
   if (formatted == false) {
-    // Clean the salaries
     cleanSalaries();
-
-    // Render remaining
     remainingBudget(true);
-
-    // Display Payroll Total
     addSalaries();
-
-    // Display Other Expenses
     addOtherExpenses(sheet, true);
-
-    // Display Other Income
     addOtherIncome(sheet);
-
-    // Display Budget
     addBudgets();
   }
   // If the data was previously formatted, only clean the salary data
@@ -109,22 +98,11 @@ function expertFormat() {
 
   // If the data was not previously formatted, run normally
   if (formatted == false) {
-    // Clean the salaries
     cleanSalaries();
-
-    // Render remaining
     remainingBudget();
-
-    // Display Payroll Total
     addSalaries();
-
-    // Display Other Expenses
     addOtherExpenses(sheet, false);
-
-    // Display Other Income
     addOtherIncome(sheet);
-
-    // Display Budget
     addBudgets();
   }
   // If the data was previously formatted, only clean the salary data
@@ -172,6 +150,7 @@ function checkFormatting(sheet) {
     }
   }
 
+  // If there was no previous formatting, return false
   return false;
 }
 
@@ -221,11 +200,10 @@ function addOtherIncome(sheet) {
   var incomeID = getSetting("incomeID");
   var incomeColor = getSetting("incomeColor");
 
+  // Insert the income row and set the formatting and color
   sheet.getRange(lastRow, 1, 1, 1).setValue(incomeID);
   sheet.getRange(lastRow, 2, 1, lastCol - 1)
                  .setNumberFormat(numberFormat);
-
-  // Set the color
   sheet.getRange(lastRow, 1, 1, lastCol).setBackground(incomeColor);
 }
 
@@ -246,6 +224,7 @@ function addOtherExpenses(sheet, simplified) {
   var expensesColor = getSetting("expensesColor");
   var expensesIndividualColor = getSetting("expensesIndividualColor");
 
+  // If we are using the simplified format, only insert a single expense row
   if (simplified == true) {
     sheet.getRange(lastRow + 1, 1, 1, 1).setValue(expensesID);
     // Set the color and format
@@ -253,6 +232,7 @@ function addOtherExpenses(sheet, simplified) {
     sheet.getRange(lastRow + 1, 2, 1, lastCol - 1)
                    .setNumberFormat(numberFormat);
   }
+  // Otherwise, insert all the additional rows for the expert formatting
   else {
     // Insert other expenses
     sheet.getRange(lastRow + 1, 1, 1, 1).setValue(staffID);
@@ -261,19 +241,19 @@ function addOtherExpenses(sheet, simplified) {
     sheet.getRange(lastRow + 4, 1, 1, 1).setValue(playerDevID);
     sheet.getRange(lastRow + 5, 1, 1, 1).setValue(miscID);
 
-    // Set the color and format
+    // Set the color and formatting for the individual expenses
     sheet.getRange(lastRow + 1, 1, 5, lastCol)
                    .setBackground(expensesIndividualColor);
     sheet.getRange(lastRow + 1, 2, 5, lastCol - 1)
                    .setNumberFormat(numberFormat);
+
+    // Set the color and formatting for the total expenses
 
     sheet.getRange(lastRow + 6, 1, 1, 1).setValue(expensesID);
     sheet.getRange(lastRow + 6, 2, 1, lastCol - 1)
                    .setValue(Utilities.formatString('=SUM(B%s:B%s)',
                                                     lastRow + 1, lastRow + 5))
                    .setNumberFormat(numberFormat);
-
-    // Set the color
     sheet.getRange(lastRow + 6, 1, 1, lastCol).setBackground(expensesColor);
   }
 }
@@ -288,6 +268,7 @@ function getSetting(option) {
 
   var sheet = spreadsheet.getSheetByName("settings");
 
+  // If the settings sheet is not found, create one
   if (sheet == null) {
     ui.alert("Settings Sheet Not Found",
       "A settings sheet could not be located. One will now be created.",
@@ -375,6 +356,7 @@ function getSetting(option) {
       break;
   }
 
+  // If the setting is not found at the given cell, ask to reset
   if (cell == null || cell == undefined || cell == "") {
     var response = ui.alert("Setting Not Found",
       "Your settings sheet might be broken. Reset it to default?",
@@ -394,7 +376,7 @@ function getSetting(option) {
 }
 
 /**
- * Fills in a settings sheet with the initial settings
+ * Populates the settings sheet with initial settings
  */
 function populateSettingsSheet() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
@@ -697,19 +679,25 @@ function remainingBudget(simplified) {
 
   lastRow = getFirstSummaryRow();
 
+  // If using the simplified formatting
   if (simplified == true) {
+    // If there is no total salary row (because the user failed to copy the
+    // "TOTAL" row from the HTML), create the remaining salary here
     if (sheet.getRange(lastRow, 1).getValue() == "") {
       sheet.getRange(lastRow, 1).setValue(remainingTerm)
                    .setBackground(remainingColor);
 
       sheet.getRange(lastRow, 2, 1,
                    Number(sheet.getDataRange().getWidth()) - 1)
-                   .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s + B%s)',
-                             lastRow + 5, lastRow + 2, lastRow + 3, lastRow + 4))
+                   .setValue(Utilities.formatString(
+                             '=SUM(B%s - B%s - B%s + B%s)',
+                             lastRow + 5, lastRow + 2,
+                             lastRow + 3, lastRow + 4))
                    .setBackground(remainingColor)
                    .setNumberFormat(numberFormat);
     }
     else {
+      // If there is a total salary row, insert the remaining salary above it
       sheet.insertRowBefore(lastRow + 1);
 
       sheet.getRange(lastRow + 1, 1).setValue(remainingTerm)
@@ -717,24 +705,32 @@ function remainingBudget(simplified) {
 
       sheet.getRange(lastRow + 1, 2, 1,
                    Number(sheet.getDataRange().getWidth()) - 1)
-                   .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s + B%s)',
-                             lastRow + 5, lastRow + 2, lastRow + 3, lastRow + 4))
+                   .setValue(Utilities.formatString(
+                             '=SUM(B%s - B%s - B%s + B%s)',
+                             lastRow + 5, lastRow + 2,
+                            lastRow + 3, lastRow + 4))
                    .setBackground(remainingColor)
                    .setNumberFormat(numberFormat);
     }
   }
+  // If using the expert formatting
   else {
+    // If there is no total salary row (because the user failed to copy the
+    // "TOTAL" row from the HTML), create the remaining salary here
     if (sheet.getRange(lastRow, 1).getValue() == "") {
       sheet.getRange(lastRow, 1).setValue(remainingTerm)
                    .setBackground(remainingColor);
 
       sheet.getRange(lastRow, 2, 1,
                    Number(sheet.getDataRange().getWidth()) - 1)
-                   .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s + B%s)',
-                             lastRow + 10, lastRow + 2, lastRow + 8, lastRow + 9))
+                   .setValue(Utilities.formatString(
+                             '=SUM(B%s - B%s - B%s + B%s)',
+                             lastRow + 10, lastRow + 2,
+                             lastRow + 8, lastRow + 9))
                    .setBackground(remainingColor)
                    .setNumberFormat(numberFormat);
     }
+    // If there is a total salary row, insert the remaining salary above it
     else {
       sheet.insertRowBefore(lastRow + 1);
 
@@ -743,8 +739,10 @@ function remainingBudget(simplified) {
 
       sheet.getRange(lastRow + 1, 2, 1,
                    Number(sheet.getDataRange().getWidth()) - 1)
-                   .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s + B%s)',
-                             lastRow + 10, lastRow + 2, lastRow + 8, lastRow + 9))
+                   .setValue(Utilities.formatString(
+                             '=SUM(B%s - B%s - B%s + B%s)',
+                             lastRow + 10, lastRow + 2,
+                             lastRow + 8, lastRow + 9))
                    .setBackground(remainingColor)
                    .setNumberFormat(numberFormat);
     }
@@ -768,6 +766,7 @@ function getBudgets() {
   var nextYear  = String(sheet.getRange(1, 3).getValue());
   var twoYear   = String(sheet.getRange(1, 4).getValue());
 
+  // If the year headers are not found, assume that there is a problem
   if (
     thisYear == "" ||
     nextYear == "" ||
@@ -929,15 +928,12 @@ function addSalaries() {
   // If the salary term does not match the totalTerm in the options
   // set it to the totalTerm or create it
   if (String(sheet.getRange(currentRow, 1).getValue()) == "TOTAL") {
-    // ui.alert("The salary total is being modified to your custom settings.");
     sheet.getRange(currentRow, 1).setValue(totalTerm);
   }
   else if (
     sheet.getRange(currentRow, 1).getValue() == "" ||
     sheet.getRange(currentRow, 1).getValue() == 0
   ) {
-    //ui.alert("The salary total was not found and is \
-    //          being created based on your custom settings");
     sheet.getRange(currentRow, 1).setValue(totalTerm);
   }
   else {
@@ -950,7 +946,8 @@ function addSalaries() {
   // Inserts the SUM formulas in the row that represents totals
   sheet.getRange(currentRow, currentCol + 2, 1,
                  sheet.getDataRange().getWidth() - 1)
-                 .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow - 2))
+                 .setValue(Utilities.formatString(
+                           '=SUM(B2:B%s)', currentRow - 2))
                  .setBackground(salaryColor)
                  .setNumberFormat(numberFormat);
 }
