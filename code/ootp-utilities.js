@@ -23,6 +23,26 @@ function onOpen() {
 }
 
 /**
+ * Checks if a format of the data has been previously initiated
+ */
+function checkFormatting(sheet) {
+  var data = sheet.getDataRange().getValues();
+  var totalRows = sheet.getDataRange().getHeight();
+
+  var remainingTerm = getSetting("remaining");
+  var i = null;
+
+  // Search for the remaining term, and return it if it's found
+  for (i in data) {
+    if (data[i][0] == remainingTerm) {
+      return Number(i);
+    }
+  }
+
+  return false;
+}
+
+/**
  * Retrieves the first row of summary items
  */
 function getFirstSummaryRow() {
@@ -36,7 +56,7 @@ function getFirstSummaryRow() {
 
   var firstCellRow = null;
 
-  var i, j;
+  var i;
 
   // Search through the first column to find the firstCell
   for (i in data) {
@@ -103,69 +123,39 @@ function simpleFormatColor() {
   simpleFormat();
 }
 
-function addOtherIncome(sheet) {
-  var lastRow = getFirstSummaryRow() + 2;
-  var lastCol = sheet.getDataRange().getWidth();
-
-  var numberFormat = getSetting("format");
-
-  sheet.getRange(lastRow + 7, 1, 1, 1).setValue("OTHER INCOME");
-  sheet.getRange(lastRow + 7, 2, 1, lastCol - 1)
-                 .setNumberFormat(numberFormat);
-
-  // Set the color
-  sheet.getRange(lastRow + 7, 1, 1, lastCol).setBackground("#76CF77");
-}
-
-function addOtherExpenses(sheet) {
-  var lastRow = getFirstSummaryRow() + 2;
-  var lastCol = sheet.getDataRange().getWidth();
-
-  var numberFormat = getSetting("format");
-
-  // Insert other expenses
-  sheet.getRange(lastRow + 1, 1, 1, 1).setValue("STAFF EXPENSES");
-  sheet.getRange(lastRow + 2, 1, 1, 1).setValue("SCOUTING EXPENSES");
-  sheet.getRange(lastRow + 3, 1, 1, 1).setValue("DRAFT EXPENSES");
-  sheet.getRange(lastRow + 4, 1, 1, 1).setValue("PLAYER DEV EXPENSES");
-  sheet.getRange(lastRow + 5, 1, 1, 1).setValue("MISC PLAYER EXPENSES");
-
-  // Set the color and format
-  sheet.getRange(lastRow + 1, 1, 5, lastCol).setBackground("#ebd2dd");
-  sheet.getRange(lastRow + 1, 2, 5, lastCol).setNumberFormat(numberFormat);
-
-  sheet.getRange(lastRow + 6, 1, 1, 1).setValue("OTHER EXPENSES");
-  sheet.getRange(lastRow + 6, 2, 1, lastCol - 1)
-                 .setValue(Utilities.formatString('=SUM(B%s:B%s)',
-                                                  lastRow + 1, lastRow + 5))
-                 .setNumberFormat(numberFormat);
-
-  // Set the color
-  sheet.getRange(lastRow + 6, 1, 1, lastCol).setBackground("#eab8b8");
-}
-
+/**
+ * Formats the data with expert options and an expansive expense model
+ */
 function expertFormat() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getActiveSheet();
 
-  // Clean the salaries
-  cleanSalaries();
+  var formatted = checkFormatting(sheet);
 
-  // Render remaining
-  remainingBudget();
+  // If the data was not previously formatted, run normally
+  if (formatted == false) {
+    // Clean the salaries
+    cleanSalaries();
 
-  // Display Payroll Total
-  addSalaries();
+    // Render remaining
+    remainingBudget();
 
-  // Display Other Expenses
-  addOtherExpenses(sheet);
+    // Display Payroll Total
+    addSalaries();
 
-  // Display Other Income
-  addOtherIncome(sheet);
+    // Display Other Expenses
+    addOtherExpenses(sheet);
 
-  // Display Budget
-  addBudgets();
+    // Display Other Income
+    addOtherIncome(sheet);
 
+    // Display Budget
+    addBudgets();
+  }
+  // If the data was previously formatted, only clean the salary data
+  else {
+    cleanSalaries();
+  }
 }
 
 /**
@@ -209,6 +199,53 @@ function expertFormatColor() {
 
   colorCells();
   expertFormat();
+}
+
+/**
+ * Adds other income summary field
+ */
+function addOtherIncome(sheet) {
+  var lastRow = getFirstSummaryRow() + 2;
+  var lastCol = sheet.getDataRange().getWidth();
+
+  var numberFormat = getSetting("format");
+
+  sheet.getRange(lastRow + 7, 1, 1, 1).setValue("OTHER INCOME");
+  sheet.getRange(lastRow + 7, 2, 1, lastCol - 1)
+                 .setNumberFormat(numberFormat);
+
+  // Set the color
+  sheet.getRange(lastRow + 7, 1, 1, lastCol).setBackground("#76CF77");
+}
+
+/**
+ * Adds other expense fields for expert formatting
+ */
+function addOtherExpenses(sheet) {
+  var lastRow = getFirstSummaryRow() + 2;
+  var lastCol = sheet.getDataRange().getWidth();
+
+  var numberFormat = getSetting("format");
+
+  // Insert other expenses
+  sheet.getRange(lastRow + 1, 1, 1, 1).setValue("STAFF EXPENSES");
+  sheet.getRange(lastRow + 2, 1, 1, 1).setValue("SCOUTING EXPENSES");
+  sheet.getRange(lastRow + 3, 1, 1, 1).setValue("DRAFT EXPENSES");
+  sheet.getRange(lastRow + 4, 1, 1, 1).setValue("PLAYER DEV EXPENSES");
+  sheet.getRange(lastRow + 5, 1, 1, 1).setValue("MISC PLAYER EXPENSES");
+
+  // Set the color and format
+  sheet.getRange(lastRow + 1, 1, 5, lastCol).setBackground("#ebd2dd");
+  sheet.getRange(lastRow + 1, 2, 5, lastCol).setNumberFormat(numberFormat);
+
+  sheet.getRange(lastRow + 6, 1, 1, 1).setValue("OTHER EXPENSES");
+  sheet.getRange(lastRow + 6, 2, 1, lastCol - 1)
+                 .setValue(Utilities.formatString('=SUM(B%s:B%s)',
+                                                  lastRow + 1, lastRow + 5))
+                 .setNumberFormat(numberFormat);
+
+  // Set the color
+  sheet.getRange(lastRow + 6, 1, 1, lastCol).setBackground("#eab8b8");
 }
 
 /**
