@@ -122,7 +122,7 @@ function expertFormat() {
     addSalaries();
 
     // Display Other Expenses
-    addOtherExpenses(sheet);
+    addOtherExpenses(sheet, false);
 
     // Display Other Income
     addOtherIncome(sheet);
@@ -233,7 +233,7 @@ function addOtherIncome(sheet) {
 /**
  * Adds other expense fields for expert formatting
  */
-function addOtherExpenses(sheet) {
+function addOtherExpenses(sheet, simplified) {
   var lastRow = getFirstSummaryRow() + 2;
   var lastCol = sheet.getDataRange().getWidth();
 
@@ -575,7 +575,7 @@ function colorCells() {
 /**
  * Displays the remaining budget by subtracting budget from salary
  */
-function remainingBudget() {
+function remainingBudget(simplified) {
   var sheet = SpreadsheetApp.getActiveSheet();
   var data = sheet.getDataRange().getValues();
   var ui = SpreadsheetApp.getUi();
