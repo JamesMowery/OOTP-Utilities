@@ -9,11 +9,8 @@ function onOpen() {
     .addSeparator()
     .addItem('Expert Format', 'expertFormat')
     .addItem('Expert Format \(Add Color\)', 'expertFormatColor')
-    .addSubMenu(
-      ui.createMenu('Expert Functions')
-  //    .addItem('Reformat Data', 'cleanSalaries')
-        .addItem('Compute Budgets', 'addBudgets')
-      )
+    .addSeparator()
+    .addItem('(Re)Compute Budgets', 'addBudgets')
     .addSeparator()
     .addItem('Add/Update Color \(Do Before Format\)', 'colorCells')
     .addItem('Remove Color', 'removeColor')
