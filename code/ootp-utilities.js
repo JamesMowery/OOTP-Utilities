@@ -40,10 +40,32 @@ function simpleFormat() {
   // Reactivate the original sheet
   sheet.activate();
 
-  /*
-  cleanSalaries();
-  generateAllTotals();
-  */
+  var formatted = checkFormatting(sheet);
+
+  // If the data was not previously formatted, run normally
+  if (formatted == false) {
+    // Clean the salaries
+    cleanSalaries();
+
+    // Render remaining
+    remainingBudget(true);
+
+    // Display Payroll Total
+    addSalaries();
+
+    // Display Other Expenses
+    addOtherExpenses(sheet, true);
+
+    // Display Other Income
+    addOtherIncome(sheet);
+
+    // Display Budget
+    addBudgets();
+  }
+  // If the data was previously formatted, only clean the salary data
+  else {
+    cleanSalaries();
+  }
 }
 
 /**
