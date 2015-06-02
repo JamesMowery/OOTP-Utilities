@@ -217,17 +217,17 @@ function getFirstSummaryRow() {
  * Adds other income summary field
  */
 function addOtherIncome(sheet) {
-  var lastRow = getFirstSummaryRow() + 2;
+  var lastRow = sheet.getDataRange().getHeight() + 1;
   var lastCol = sheet.getDataRange().getWidth();
 
   var numberFormat = getSetting("format");
 
-  sheet.getRange(lastRow + 7, 1, 1, 1).setValue("OTHER INCOME");
-  sheet.getRange(lastRow + 7, 2, 1, lastCol - 1)
+  sheet.getRange(lastRow, 1, 1, 1).setValue("OTHER INCOME");
+  sheet.getRange(lastRow, 2, 1, lastCol - 1)
                  .setNumberFormat(numberFormat);
 
   // Set the color
-  sheet.getRange(lastRow + 7, 1, 1, lastCol).setBackground("#76CF77");
+  sheet.getRange(lastRow, 1, 1, lastCol).setBackground("#76CF77");
 }
 
 /**
