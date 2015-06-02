@@ -809,18 +809,6 @@ function addSalaries() {
 }
 
 /**
- * Executes the cleanSalaries function after adding color
- */
-function cleanSalariesColor() {
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = spreadsheet.getActiveSheet();
-
-  colorCells();
-  sheet.activate();
-  cleanSalaries();
-}
-
-/**
  * A function that cleans and reformats OOTP salary data,
  * thus making it usable within a spreadsheet environment.
  */
