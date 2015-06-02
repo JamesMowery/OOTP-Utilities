@@ -165,7 +165,7 @@ function checkFormatting(sheet) {
   var data = sheet.getDataRange().getValues();
   var totalRows = sheet.getDataRange().getHeight();
 
-  var remainingTerm = getSetting("remaining");
+  var remainingTerm = getSetting("remainingID");
   var i = null;
 
   // Search for the remaining term, and return it if it's found
@@ -187,8 +187,8 @@ function getFirstSummaryRow() {
   var totalRows = sheet.getDataRange().getHeight();
 
   var totalDefault = "TOTAL";
-  var totalTerm = getSetting("salary");
-  var remainingTerm = getSetting("remaining");
+  var totalTerm = getSetting("salaryID");
+  var remainingTerm = getSetting("remainingID");
 
   var firstCellRow = null;
 
@@ -221,13 +221,15 @@ function addOtherIncome(sheet) {
   var lastCol = sheet.getDataRange().getWidth();
 
   var numberFormat = getSetting("format");
+  var incomeID = getSetting("incomeID");
+  var incomeColor = getSetting("incomeColor");
 
-  sheet.getRange(lastRow, 1, 1, 1).setValue("OTHER INCOME");
+  sheet.getRange(lastRow, 1, 1, 1).setValue(incomeID);
   sheet.getRange(lastRow, 2, 1, lastCol - 1)
                  .setNumberFormat(numberFormat);
 
   // Set the color
-  sheet.getRange(lastRow, 1, 1, lastCol).setBackground("#76CF77");
+  sheet.getRange(lastRow, 1, 1, lastCol).setBackground(incomeColor);
 }
 
 /**
@@ -238,33 +240,44 @@ function addOtherExpenses(sheet, simplified) {
   var lastCol = sheet.getDataRange().getWidth();
 
   var numberFormat = getSetting("format");
+  var expensesID = getSetting("expensesID");
+  var staffID = getSetting("staffID");
+  var scoutingID = getSetting("scoutingID");
+  var draftID = getSetting("draftID");
+  var playerDevID = getSetting("playerDevID");
+  var miscID = getSetting("miscID");
+  var expensesColor = getSetting("expensesColor");
+  var expensesIndividualColor = getSetting("expensesIndividualColor");
 
   if (simplified == true) {
-    sheet.getRange(lastRow + 1, 1, 1, 1).setValue("OTHER EXPENSES");
+    sheet.getRange(lastRow + 1, 1, 1, 1).setValue(expensesID);
     // Set the color and format
-    sheet.getRange(lastRow + 1, 1, 1, lastCol).setBackground("#eab8b8");
-    sheet.getRange(lastRow + 1, 2, 1, lastCol - 1).setNumberFormat(numberFormat);
+    sheet.getRange(lastRow + 1, 1, 1, lastCol).setBackground(expensesColor);
+    sheet.getRange(lastRow + 1, 2, 1, lastCol - 1)
+                   .setNumberFormat(numberFormat);
   }
   else {
     // Insert other expenses
-    sheet.getRange(lastRow + 1, 1, 1, 1).setValue("STAFF EXPENSES");
-    sheet.getRange(lastRow + 2, 1, 1, 1).setValue("SCOUTING EXPENSES");
-    sheet.getRange(lastRow + 3, 1, 1, 1).setValue("DRAFT EXPENSES");
-    sheet.getRange(lastRow + 4, 1, 1, 1).setValue("PLAYER DEV EXPENSES");
-    sheet.getRange(lastRow + 5, 1, 1, 1).setValue("MISC PLAYER EXPENSES");
+    sheet.getRange(lastRow + 1, 1, 1, 1).setValue(staffID);
+    sheet.getRange(lastRow + 2, 1, 1, 1).setValue(scoutingID);
+    sheet.getRange(lastRow + 3, 1, 1, 1).setValue(draftID);
+    sheet.getRange(lastRow + 4, 1, 1, 1).setValue(playerDevID);
+    sheet.getRange(lastRow + 5, 1, 1, 1).setValue(miscID);
 
     // Set the color and format
-    sheet.getRange(lastRow + 1, 1, 5, lastCol).setBackground("#ebd2dd");
-    sheet.getRange(lastRow + 1, 2, 5, lastCol - 1).setNumberFormat(numberFormat);
+    sheet.getRange(lastRow + 1, 1, 5, lastCol)
+                   .setBackground(expensesIndividualColor);
+    sheet.getRange(lastRow + 1, 2, 5, lastCol - 1)
+                   .setNumberFormat(numberFormat);
 
-    sheet.getRange(lastRow + 6, 1, 1, 1).setValue("OTHER EXPENSES");
+    sheet.getRange(lastRow + 6, 1, 1, 1).setValue(expensesID);
     sheet.getRange(lastRow + 6, 2, 1, lastCol - 1)
                    .setValue(Utilities.formatString('=SUM(B%s:B%s)',
                                                     lastRow + 1, lastRow + 5))
                    .setNumberFormat(numberFormat);
 
     // Set the color
-    sheet.getRange(lastRow + 6, 1, 1, lastCol).setBackground("#eab8b8");
+    sheet.getRange(lastRow + 6, 1, 1, lastCol).setBackground(expensesColor);
   }
 }
 
@@ -291,6 +304,9 @@ function getSetting(option) {
     case "freeze":
       cell = sheet.getRange(2, 2, 1, 1);
       break;
+    case "format":
+      cell = sheet.getRange(5, 2, 1, 1);
+      break;
     case "player":
       cell = sheet.getRange(8, 2, 1, 1);
       break;
@@ -309,17 +325,53 @@ function getSetting(option) {
     case "minor":
       cell = sheet.getRange(13, 2, 1, 1);
       break;
-    case "format":
-      cell = sheet.getRange(5, 2, 1, 1);
+    case "remainingColor":
+      cell = sheet.getRange(16, 2, 1, 1);
       break;
-    case "salary":
+    case "salaryColor":
+      cell = sheet.getRange(17, 2, 1, 1);
+      break;
+    case "expensesIndividualColor":
+      cell = sheet.getRange(18, 2, 1, 1);
+      break;
+    case "expensesColor":
+      cell = sheet.getRange(19, 2, 1, 1);
+      break;
+    case "incomeColor":
+      cell = sheet.getRange(20, 2, 1, 1);
+      break;
+    case "budgetColor":
+      cell = sheet.getRange(21, 2, 1, 1);
+      break;
+    case "remainingID":
+      cell = sheet.getRange(24, 2, 1, 1);
+      break;
+    case "salaryID":
       cell = sheet.getRange(25, 2, 1, 1);
       break;
-    case "budget":
-      cell = sheet.getRange(33, 2, 1, 1);
+    case "staffID":
+      cell = sheet.getRange(26, 2, 1, 1);
       break;
-    case "remaining":
-      cell = sheet.getRange(24, 2, 1, 1);
+    case "scoutingID":
+      cell = sheet.getRange(27, 2, 1, 1);
+      break;
+    case "draftID":
+      cell = sheet.getRange(28, 2, 1, 1);
+      break;
+    case "playerDevID":
+      cell = sheet.getRange(29, 2, 1, 1);
+      break;
+    case "miscID":
+      cell = sheet.getRange(30, 2, 1, 1);
+      break;
+    case "expensesID":
+      cell = sheet.getRange(31, 2, 1, 1);
+      break;
+    case "incomeID":
+      cell = sheet.getRange(32, 2, 1, 1);
+      break;
+    case "budgetID":
+      cell = sheet.getRange(33, 2, 1, 1);
       break;
     default:
       cell = undefined;
@@ -411,7 +463,7 @@ function populateSettingsSheet() {
          .setFontWeight("Bold");
 
   cell = sheet.getRange(16, 1, 1, 1).setValue("Remaining Total");
-  cell = sheet.getRange(16, 2, 1, 1).setValue("#FB8072");
+  cell = sheet.getRange(16, 2, 1, 1).setValue("#DAEBD4");
 
   cell = sheet.getRange(17, 1, 1, 1).setValue("Salary Total");
   cell = sheet.getRange(17, 2, 1, 1).setValue("#FA8176");
@@ -509,12 +561,7 @@ function removeColor() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var data = sheet.getDataRange().getValues();
 
-  var totalTerm = getSetting("salary");
-
-  var totalCols = Number(sheet.getDataRange().getWidth()) - 1;
-  var lastNumberRow, i, j;
-
-  lastNumberRow = getFirstSummaryRow() - 1;
+  var lastNumberRow = getFirstSummaryRow() - 1;
 
   // Sets the range of cells containing contract data to white
   sheet.getRange(2, 2, lastNumberRow,
@@ -642,9 +689,10 @@ function remainingBudget(simplified) {
   var data = sheet.getDataRange().getValues();
   var ui = SpreadsheetApp.getUi();
 
-  var budgetTerm = getSetting("budget");
-  var remainingTerm = getSetting("remaining");
+  var budgetTerm = getSetting("budgetID");
+  var remainingTerm = getSetting("remainingID");
   var numberFormat = getSetting("format");
+  var remainingColor = getSetting("remainingColor");
 
   var i, j, lastRow, currentRow;
   var hasBudget = false;
@@ -655,52 +703,52 @@ function remainingBudget(simplified) {
   if (simplified == true) {
     if (sheet.getRange(lastRow, 1).getValue() == "") {
       sheet.getRange(lastRow, 1).setValue(remainingTerm)
-                   .setBackground("#daebd4");
+                   .setBackground(remainingColor);
 
       sheet.getRange(lastRow, 2, 1,
                    Number(sheet.getDataRange().getWidth()) - 1)
                    .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s + B%s)',
                              lastRow + 5, lastRow + 2, lastRow + 3, lastRow + 4))
-                   .setBackground("#daebd4")
+                   .setBackground(remainingColor)
                    .setNumberFormat(numberFormat);
     }
     else {
       sheet.insertRowBefore(lastRow + 1);
 
       sheet.getRange(lastRow + 1, 1).setValue(remainingTerm)
-                   .setBackground("#daebd4");
+                   .setBackground(remainingColor);
 
       sheet.getRange(lastRow + 1, 2, 1,
                    Number(sheet.getDataRange().getWidth()) - 1)
                    .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s + B%s)',
                              lastRow + 5, lastRow + 2, lastRow + 3, lastRow + 4))
-                   .setBackground("#daebd4")
+                   .setBackground(remainingColor)
                    .setNumberFormat(numberFormat);
     }
   }
   else {
     if (sheet.getRange(lastRow, 1).getValue() == "") {
       sheet.getRange(lastRow, 1).setValue(remainingTerm)
-                   .setBackground("#daebd4");
+                   .setBackground(remainingColor);
 
       sheet.getRange(lastRow, 2, 1,
                    Number(sheet.getDataRange().getWidth()) - 1)
                    .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s + B%s)',
                              lastRow + 10, lastRow + 2, lastRow + 8, lastRow + 9))
-                   .setBackground("#daebd4")
+                   .setBackground(remainingColor)
                    .setNumberFormat(numberFormat);
     }
     else {
       sheet.insertRowBefore(lastRow + 1);
 
       sheet.getRange(lastRow + 1, 1).setValue(remainingTerm)
-                   .setBackground("#daebd4");
+                   .setBackground(remainingColor);
 
       sheet.getRange(lastRow + 1, 2, 1,
                    Number(sheet.getDataRange().getWidth()) - 1)
                    .setValue(Utilities.formatString('=SUM(B%s - B%s - B%s + B%s)',
                              lastRow + 10, lastRow + 2, lastRow + 8, lastRow + 9))
-                   .setBackground("#daebd4")
+                   .setBackground(remainingColor)
                    .setNumberFormat(numberFormat);
     }
   }
@@ -797,7 +845,7 @@ function addBudgets() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var ui = SpreadsheetApp.getUi();
 
-  var budgetTerm = getSetting("budget");
+  var budgetTerm = getSetting("budgetID");
   var numberFormat = getSetting("format");
 
   var currentRow = 0;
@@ -870,8 +918,9 @@ function addSalaries() {
   var data = sheet.getDataRange().getValues();
   var ui = SpreadsheetApp.getUi();
 
-  var totalTerm = getSetting("salary");
+  var totalTerm = getSetting("salaryID");
   var numberFormat = getSetting("format");
+  var salaryColor = getSetting("salaryColor");
 
   var cell = [];
   var currentRow = 0;
@@ -899,13 +948,13 @@ function addSalaries() {
     return null;
   }
 
-  sheet.getRange(currentRow, 1).setBackground("#fa8176");
+  sheet.getRange(currentRow, 1).setBackground(salaryColor);
 
   // Inserts the SUM formulas in the row that represents totals
   sheet.getRange(currentRow, currentCol + 2, 1,
                  sheet.getDataRange().getWidth() - 1)
                  .setValue(Utilities.formatString('=SUM(B2:B%s)', currentRow - 2))
-                 .setBackground("#fa8176")
+                 .setBackground(salaryColor)
                  .setNumberFormat(numberFormat);
 }
 
@@ -930,8 +979,6 @@ function cleanSalaries() {
   data = sheet.getRange(2, 2, getFirstSummaryRow() - 1,
                         sheet.getDataRange().getWidth() - 2)
                         .getValues();
-
-  // TODO: Add code that finds and checks for numbers only
 
   // If the options sheet states to freeze the rows, freeze them,
   // otherwise, remove the frozen rows
