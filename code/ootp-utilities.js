@@ -829,15 +829,15 @@ function addSalaries() {
   // If the salary term does not match the totalTerm in the options
   // set it to the totalTerm or create it
   if (String(sheet.getRange(currentRow, 1).getValue()) == "TOTAL") {
-    ui.alert("The salary total is being modified to your custom settings.");
+    // ui.alert("The salary total is being modified to your custom settings.");
     sheet.getRange(currentRow, 1).setValue(totalTerm);
   }
   else if (
     sheet.getRange(currentRow, 1).getValue() == "" ||
     sheet.getRange(currentRow, 1).getValue() == 0
   ) {
-    ui.alert("The salary total was not found and is \
-              being created based on your custom settings");
+    //ui.alert("The salary total was not found and is \
+    //          being created based on your custom settings");
     sheet.getRange(currentRow, 1).setValue(totalTerm);
   }
   else {
