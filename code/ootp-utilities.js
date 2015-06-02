@@ -239,25 +239,33 @@ function addOtherExpenses(sheet, simplified) {
 
   var numberFormat = getSetting("format");
 
-  // Insert other expenses
-  sheet.getRange(lastRow + 1, 1, 1, 1).setValue("STAFF EXPENSES");
-  sheet.getRange(lastRow + 2, 1, 1, 1).setValue("SCOUTING EXPENSES");
-  sheet.getRange(lastRow + 3, 1, 1, 1).setValue("DRAFT EXPENSES");
-  sheet.getRange(lastRow + 4, 1, 1, 1).setValue("PLAYER DEV EXPENSES");
-  sheet.getRange(lastRow + 5, 1, 1, 1).setValue("MISC PLAYER EXPENSES");
+  if (simplified == true) {
+    sheet.getRange(lastRow + 1, 1, 1, 1).setValue("OTHER EXPENSES");
+    // Set the color and format
+    sheet.getRange(lastRow + 1, 1, 1, lastCol).setBackground("#eab8b8");
+    sheet.getRange(lastRow + 1, 2, 1, lastCol - 1).setNumberFormat(numberFormat);
+  }
+  else {
+    // Insert other expenses
+    sheet.getRange(lastRow + 1, 1, 1, 1).setValue("STAFF EXPENSES");
+    sheet.getRange(lastRow + 2, 1, 1, 1).setValue("SCOUTING EXPENSES");
+    sheet.getRange(lastRow + 3, 1, 1, 1).setValue("DRAFT EXPENSES");
+    sheet.getRange(lastRow + 4, 1, 1, 1).setValue("PLAYER DEV EXPENSES");
+    sheet.getRange(lastRow + 5, 1, 1, 1).setValue("MISC PLAYER EXPENSES");
 
-  // Set the color and format
-  sheet.getRange(lastRow + 1, 1, 5, lastCol).setBackground("#ebd2dd");
-  sheet.getRange(lastRow + 1, 2, 5, lastCol).setNumberFormat(numberFormat);
+    // Set the color and format
+    sheet.getRange(lastRow + 1, 1, 5, lastCol).setBackground("#ebd2dd");
+    sheet.getRange(lastRow + 1, 2, 5, lastCol - 1).setNumberFormat(numberFormat);
 
-  sheet.getRange(lastRow + 6, 1, 1, 1).setValue("OTHER EXPENSES");
-  sheet.getRange(lastRow + 6, 2, 1, lastCol - 1)
-                 .setValue(Utilities.formatString('=SUM(B%s:B%s)',
-                                                  lastRow + 1, lastRow + 5))
-                 .setNumberFormat(numberFormat);
+    sheet.getRange(lastRow + 6, 1, 1, 1).setValue("OTHER EXPENSES");
+    sheet.getRange(lastRow + 6, 2, 1, lastCol - 1)
+                   .setValue(Utilities.formatString('=SUM(B%s:B%s)',
+                                                    lastRow + 1, lastRow + 5))
+                   .setNumberFormat(numberFormat);
 
-  // Set the color
-  sheet.getRange(lastRow + 6, 1, 1, lastCol).setBackground("#eab8b8");
+    // Set the color
+    sheet.getRange(lastRow + 6, 1, 1, lastCol).setBackground("#eab8b8");
+  }
 }
 
 /**
