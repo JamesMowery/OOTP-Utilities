@@ -1,7 +1,7 @@
 # OOTP Utilities by James Mowery
 
 
-[![OOTP Utilities](https://raw.githubusercontent.com/JamesMowery/OOTP-Utilities/master/docs/img/13.png)](https://raw.githubusercontent.com/JamesMowery/OOTP-Utilities/master/docs/img/13.png)
+[![OOTP Utilities](https://raw.githubusercontent.com/JamesMowery/OOTP-Utilities/master/docs/img/08.png)](https://raw.githubusercontent.com/JamesMowery/OOTP-Utilities/master/docs/img/08.png)
 
 ## About This Project
 
